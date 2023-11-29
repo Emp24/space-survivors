@@ -12,3 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 93dcb34f2b4f1ad4287b23d07eb02edc, type: 3}
   m_Name: New Default Gun Strategy
   m_EditorClassIdentifier: 
+  projectile: {fileID: -5879368052583637018, guid: 760802678af021a4693a4aa6b7bf9bdc, type: 3}

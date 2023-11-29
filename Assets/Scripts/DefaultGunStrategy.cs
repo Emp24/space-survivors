@@ -1,15 +1,14 @@
+using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu]
 public class DefaultGunStrategy : FireStrategy
 {
-    public override void FireGun(Transform gunPos, PlayerController player)
+    public override void FireGun(Transform gunPos, GameObject source)
     {
         // GameObject newBullet = Instantiate(bullet, new Vector3(gunPos.position.x, gunPos.position.y, 0), Quaternion.identity);
-        GameObject newBullet = ObjectPool.SharedInstance.GetPooledObject();
-
+        GameObject newBullet = BulletProjectilePool.SharedInstance.GetPooledObject();
         if (newBullet != null)
         {
 
@@ -17,8 +16,11 @@ public class DefaultGunStrategy : FireStrategy
             newBullet.transform.rotation = gunPos.transform.rotation;
             newBullet.SetActive(true);
         }
-        Vector3 bulletDirection = player.transform.up.normalized;
-        player.StartCoroutine(MoveBullet(newBullet, bulletDirection));
+        double sourceRotationAngleRad = source.transform.rotation.z * Math.PI / 180;
+
+        Vector3 bulletDirection = source.transform.up.normalized;
+        bulletDirection.y = bulletDirection.y * (float)Math.Cos(sourceRotationAngleRad);
+        newBullet.GetComponent<MonoBehaviour>().StartCoroutine(MoveBullet(newBullet, bulletDirection));
     }
     IEnumerator MoveBullet(GameObject bullet, Vector3 direction)
     {
@@ -30,6 +32,6 @@ public class DefaultGunStrategy : FireStrategy
             yield return null;
         }
         bullet.SetActive(false);
-        ObjectPool.SharedInstance.ReturnToPool(bullet);
+        BulletProjectilePool.SharedInstance.ReturnToPool(bullet);
     }
 }

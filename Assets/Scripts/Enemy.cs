@@ -7,7 +7,12 @@ public class Enemy : MonoBehaviour
 {
     [SerializeField]
     private float health;
-    // public float damage;
+    [SerializeField]
+    public FireStrategy gun;
+    [SerializeField]
+    public Transform gunPos;
+    public float damage;
+    public Projectile projectile;
 
     // public float speed;
 
@@ -18,15 +23,13 @@ public class Enemy : MonoBehaviour
 
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.Space))
+            gun.FireGun(gunPos, this.gameObject);
         DestroyEnemy();
     }
-    public void TakeDamage(float damage)
-    {
-        health -= damage;
-    }
+
     public void OnCollisionEnter2D(Collision2D other)
     {
-        Debug.Log("test");
         if (other.gameObject.tag == "Projectile")
         {
             TakeDamage(10);
@@ -40,5 +43,10 @@ public class Enemy : MonoBehaviour
         {
             Destroy(gameObject);
         }
+    }
+
+    public void TakeDamage(float damage)
+    {
+        health -= damage;
     }
 }

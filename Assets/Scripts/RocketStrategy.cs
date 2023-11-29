@@ -6,7 +6,7 @@ using UnityEngine;
 public class RocketStrategy : FireStrategy
 {
     public GameObject prefab;
-    public override void FireGun(Transform gunPos, PlayerController player)
+    public override void FireGun(Transform gunPos, GameObject player)
     {
         GameObject newBullet = Instantiate(prefab, new Vector3(gunPos.position.x, gunPos.position.y, 0), Quaternion.identity);
 
@@ -20,10 +20,8 @@ public class RocketStrategy : FireStrategy
         }
         Vector3 bulletDirection = player.transform.up;
         bulletDirection.Normalize();
-        player.StartCoroutine(MoveBullet(newBullet, bulletDirection));
-        // bullet.transform.position += bulletDirection * Time.deltaTime * 10f;
-        // Debug.Log(bullet.transform.position);
-        Destroy(newBullet, 3f); // Destroy the bullet after 2 seconds, adjust as needed.
+        newBullet.GetComponent<MonoBehaviour>().StartCoroutine(MoveBullet(newBullet, bulletDirection));
+
     }
     IEnumerator MoveBullet(GameObject bullet, Vector3 direction)
     {

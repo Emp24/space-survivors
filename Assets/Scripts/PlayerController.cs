@@ -16,7 +16,7 @@ public class PlayerController : MonoBehaviour
     public GameObject bullet;
     private float attackRate = 0.2f;
     public Vector2 speed = new(5, 5);
-
+    public Projectile projectile;
     public Transform rightGun;
     public Transform leftGun;
 
@@ -28,8 +28,8 @@ public class PlayerController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space))
         {
 
-            defaultGun.FireGun(rightGun, this);
-            defaultGun.FireGun(leftGun, this);
+            defaultGun.FireGun(rightGun, this.gameObject);
+            defaultGun.FireGun(leftGun, this.gameObject);
         }
     }
     private float startTime;
@@ -68,83 +68,5 @@ public class PlayerController : MonoBehaviour
         transform.rotation = Quaternion.Euler(new Vector3(0, 0, angle - 90f));
     }
 
-    public void Fire(Transform gunPos)
-    {    //get gun position
-        // fire from gun position
-        // y-axis of gun position + movement distance over attack speed
-        Vector3 mousePos = Input.mousePosition;
-        mousePos.z = 5.23f;
 
-        Vector3 objectPos = Camera.main.WorldToScreenPoint(transform.position);
-        mousePos.x = mousePos.x - objectPos.x;
-        mousePos.y = mousePos.y - objectPos.y;
-        float angle = Mathf.Atan2(mousePos.y, mousePos.x) * Mathf.Rad2Deg;
-        Debug.Log("angle: " + angle);
-        Debug.Log("mousePos: " + mousePos);
-        float angleRad = angle * Mathf.Deg2Rad;
-        float terminalPointX;
-        float terminalPointY;
-        if (gunPos.position.x < 0)
-        {
-            terminalPointX = (gunPos.position.x - 5f) * Mathf.Cos(angleRad);
-        }
-        else
-        {
-            terminalPointX = (gunPos.position.x + 5f) * Mathf.Cos(angleRad);
-
-        }
-        if (gunPos.position.y < 0)
-        {
-            terminalPointY = (gunPos.position.y - 5f) * Mathf.Sin(angleRad);
-        }
-        else
-        {
-            terminalPointY = (gunPos.position.y + 5f) * Mathf.Sin(angleRad);
-
-        }
-
-
-
-        float distCovered = (Time.time - startTime) * 1f;
-
-        // Fraction of journey completed equals current distance divided by total distance.
-        float fractionOfJourney = distCovered / journeyLength;
-        GameObject newBullet = Instantiate(bullet, new Vector3(gunPos.position.x, gunPos.position.y, 0), Quaternion.identity);
-
-        newBullet.transform.DOMove(new Vector3(terminalPointX, terminalPointY, 0), attackRate).OnComplete(() =>
-        {
-            Destroy(newBullet);
-        });
-    }
-
-    // public void TestingFire(Transform gunPos)
-    // {
-    //     // GameObject newBullet = Instantiate(bullet, new Vector3(gunPos.position.x, gunPos.position.y, 0), Quaternion.identity);
-    //     GameObject newBullet = ObjectPool.SharedInstance.GetPooledObject();
-
-    //     if (newBullet != null)
-    //     {
-
-    //         newBullet.transform.position = gunPos.transform.position;
-    //         newBullet.transform.rotation = gunPos.transform.rotation;
-    //         newBullet.SetActive(true);
-    //     }
-    //     Vector3 bulletDirection = transform.up;
-    //     bulletDirection.Normalize();
-    //     StartCoroutine(MoveBullet(newBullet, bulletDirection));
-    //     // bullet.transform.position += bulletDirection * Time.deltaTime * 10f;
-    //     // Debug.Log(bullet.transform.position);
-    //     // Destroy(newBullet, 3f); // Destroy the bullet after 2 seconds, adjust as needed.
-
-    // }
-    // IEnumerator MoveBullet(GameObject bullet, Vector3 direction)
-    // {
-    //     float startTime = Time.time;
-    //     while (Time.time - startTime < 2f) // Adjust the duration as needed.
-    //     {
-    //         bullet.transform.position += direction * 10f * Time.deltaTime;
-    //         yield return null;
-    //     }
-    //     bullet.SetActive(false);
-    // }
 }
