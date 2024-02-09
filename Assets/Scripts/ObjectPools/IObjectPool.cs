@@ -4,6 +4,7 @@ using UnityEngine;
 
 public interface IObjectPool
 {
+
     // Initializes the object pooling system by instantiating a specified number of GameObjects and adding them to a queue for future use.
     void InitializePool();
 

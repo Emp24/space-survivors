@@ -11,9 +11,13 @@ public class DefaultGunStrategy : FireStrategy
         GameObject newBullet = BulletProjectilePool.SharedInstance.GetPooledObject();
         if (newBullet != null)
         {
-
-            newBullet.transform.position = gunPos.transform.position;
-            newBullet.transform.rotation = gunPos.transform.rotation;
+            Projectile projectile = newBullet.GetComponent<Projectile>();
+            //details can be injected from source
+            projectile.damage = source.GetComponent<IDamageable>().damage;
+            projectile.gameObject.layer = LayerMask.NameToLayer(source.GetComponent<IDamageable>().layer);
+            projectile.source = source;
+            newBullet.transform.position = gunPos.position;
+            newBullet.transform.rotation = gunPos.rotation;
             newBullet.SetActive(true);
         }
         double sourceRotationAngleRad = source.transform.rotation.z * Math.PI / 180;
@@ -21,6 +25,16 @@ public class DefaultGunStrategy : FireStrategy
         Vector3 bulletDirection = source.transform.up.normalized;
         bulletDirection.y = bulletDirection.y * (float)Math.Cos(sourceRotationAngleRad);
         newBullet.GetComponent<MonoBehaviour>().StartCoroutine(MoveBullet(newBullet, bulletDirection));
+    }
+    public void IntializeProjectilePosition(Transform newBulletTransform, Transform gunPos)
+    {
+
+    }
+
+    public void IntializeProjectileData(float damage)
+    {
+
+
     }
     IEnumerator MoveBullet(GameObject bullet, Vector3 direction)
     {

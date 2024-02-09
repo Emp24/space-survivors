@@ -1,9 +1,9 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class EnemyProjectilePool : MonoBehaviour, IObjectPool
 {
+
     public static IObjectPool SharedInstance;
     public Queue<GameObject> pooledObjects;
     public GameObject objectToPool;

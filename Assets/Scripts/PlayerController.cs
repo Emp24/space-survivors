@@ -1,22 +1,27 @@
-using System.Collections;
-using System.Collections.Generic;
+using UnityEditor.Callbacks;
 using UnityEngine;
-using DG.Tweening;
-using Unity.Mathematics;
-using System;
-using Unity.VisualScripting;
 
 
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : MonoBehaviour, IDamageable
 {
+    [SerializeField]
+    Rigidbody2D rb;
+    [SerializeField]
+    private float _health;
+    [SerializeField]
+    private float _damage;
+    public float health { get => _health; set => _health = value; }
+    public float damage { get => _damage; set => _damage = value; }
+    public string _layer = "Player";
+    public string layer { get => _layer; set => _layer = value; }
+
     [SerializeField] FireStrategy defaultGun;
     [SerializeField] FireStrategy rocketGun;
     public GameObject player;
     public GameObject bullet;
     private float attackRate = 0.2f;
     public Vector2 speed = new(5, 5);
-    public Projectile projectile;
     public Transform rightGun;
     public Transform leftGun;
 
@@ -25,7 +30,7 @@ public class PlayerController : MonoBehaviour
         Debug.DrawLine(new Vector3(0, 0, 0), new Vector3(5, 5, 0), Color.green);
         PlayerMovement();
         PlayerRotation();
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKey(KeyCode.Mouse0))
         {
 
             defaultGun.FireGun(rightGun, this.gameObject);
@@ -34,6 +39,9 @@ public class PlayerController : MonoBehaviour
     }
     private float startTime;
     private float journeyLength;
+
+
+
     void Start()
     {
         // Keep a note of the time the movement started.
@@ -43,16 +51,27 @@ public class PlayerController : MonoBehaviour
         journeyLength = Vector3.Distance(new Vector3(-0.01f, -0.68f, 0), new Vector3(50, 50, 0));
     }
 
+    public void OnCollisionEnter2D(Collision2D other)
+    {
+        string collidingObjectTag = other.gameObject.tag;
+        string sourceTag = other.gameObject.GetComponent<Projectile>().source.tag;
+
+        if (collidingObjectTag == "Projectile" && sourceTag == "Enemy")
+        {
+            TakeDamage(other.gameObject.GetComponent<Projectile>().damage);
+        }
+    }
     public void PlayerMovement()
     {
         float inputX = Input.GetAxis("Horizontal");
         float inputY = Input.GetAxis("Vertical");
 
-        Vector3 movement = new Vector3(speed.x * inputX, speed.y * inputY, 0);
+        Vector2 movement = new Vector2(speed.x * inputX, speed.y * inputY);
 
-        movement *= Time.deltaTime;
+        // movement *= Time.deltaTime;
+        rb.velocity = movement;
 
-        transform.Translate(movement);
+        // transform.Translate(movement);
     }
 
     public void PlayerRotation()
@@ -67,6 +86,11 @@ public class PlayerController : MonoBehaviour
         float angle = Mathf.Atan2(mousePos.y, mousePos.x) * Mathf.Rad2Deg;
         transform.rotation = Quaternion.Euler(new Vector3(0, 0, angle - 90f));
     }
+    public void TakeDamage(float damage)
+    {
+        health -= damage;
+    }
+
 
 
 }

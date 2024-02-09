@@ -3,16 +3,25 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class Enemy : MonoBehaviour
+public class Enemy : MonoBehaviour, IDamageable
 {
-    [SerializeField]
-    private float health;
+    // [SerializeField]
+    // private float health;
     [SerializeField]
     public FireStrategy gun;
     [SerializeField]
     public Transform gunPos;
-    public float damage;
+    // public float damage;
     public Projectile projectile;
+    public string _layer = "Enemy";
+    public string layer { get => _layer; set => _layer = value; }
+
+    [SerializeField]
+    private float _health;
+    [SerializeField]
+    private float _damage;
+    public float health { get => _health; set => _health = value; }
+    public float damage { get => _damage; set => _damage = value; }
 
     // public float speed;
 
@@ -30,9 +39,12 @@ public class Enemy : MonoBehaviour
 
     public void OnCollisionEnter2D(Collision2D other)
     {
-        if (other.gameObject.tag == "Projectile")
+        string collidingObjectTag = other.gameObject.tag;
+        string sourceTag = other.gameObject.GetComponent<Projectile>().source.tag;
+
+        if (collidingObjectTag == "Projectile" && sourceTag == "Player")
         {
-            TakeDamage(10);
+            TakeDamage(other.gameObject.GetComponent<Projectile>().damage);
         }
     }
 
