@@ -26,7 +26,7 @@ public class PlayerController : MonoBehaviour, IDamageable
     public Vector2 speed = new(5, 5);
     public Transform rightGun;
     public Transform leftGun;
-
+    public Camera cam;
     void Update()
     {
         Debug.DrawLine(new Vector3(0, 0, 0), new Vector3(5, 5, 0), Color.green);
@@ -74,6 +74,8 @@ public class PlayerController : MonoBehaviour, IDamageable
 
         // movement *= Time.deltaTime;
         rb.velocity = movement;
+        //moving the camera with the player (keeping the camera on the player)
+        cam.transform.position = new Vector3(transform.position.x, transform.position.y, cam.transform.position.z);
 
         // transform.Translate(movement);
     }
