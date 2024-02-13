@@ -1,6 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class Enemy : MonoBehaviour, IDamageable
@@ -22,6 +19,11 @@ public class Enemy : MonoBehaviour, IDamageable
     private float _damage;
     public float health { get => _health; set => _health = value; }
     public float damage { get => _damage; set => _damage = value; }
+    public float fireRate = 1f;
+    private float movementSpeed = 0.09f;
+    public float nextMovementTime = 0f;
+    private float nextFireTime = 0f;
+    public GameObject player;
 
     // public float speed;
 
@@ -32,8 +34,24 @@ public class Enemy : MonoBehaviour, IDamageable
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Time.time >= nextFireTime)
+        {
             gun.FireGun(gunPos, this.gameObject);
+            nextFireTime = Time.time + fireRate;
+
+        }
+        if (Time.time >= nextMovementTime)
+        {
+            Movement(player.transform.position);
+            Rotation(player.transform.position);
+            nextMovementTime = Time.time + movementSpeed;
+        }
+        // StartCoroutine(Movement());
+
+        // if (Time.time >= nextFireTime)
+        // {
+        //     Movement(new Vector2(0, 0));
+        // }
         DestroyEnemy();
     }
 
@@ -60,5 +78,14 @@ public class Enemy : MonoBehaviour, IDamageable
     public void TakeDamage(float damage)
     {
         health -= damage;
+    }
+    public void Movement(Vector2 playerPosition)
+    {
+        transform.position = Vector2.MoveTowards(transform.position, playerPosition, 10 * Time.deltaTime);
+    }
+    public void Rotation(Vector2 playerPosition)
+    {
+        float angle = Mathf.Atan2(playerPosition.y, playerPosition.x) * Mathf.Rad2Deg;
+        transform.rotation = Quaternion.Euler(new Vector3(0, 0, angle - 90f));
     }
 }

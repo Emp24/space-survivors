@@ -389,6 +389,10 @@ MonoBehaviour:
   _layer: Enemy
   _health: 100
   _damage: 2
+  fireRate: 0.5
+  movementSpeed: 0.1
+  nextMovementTime: 0
+  player: {fileID: 175135654}
 --- !u!61 &355975903
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -857,6 +861,10 @@ MonoBehaviour:
   _layer: Enemy
   _health: 100
   _damage: 2
+  fireRate: 0.5
+  movementSpeed: 0.1
+  nextMovementTime: 0
+  player: {fileID: 175135654}
 --- !u!212 &877261165
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -1178,6 +1186,10 @@ MonoBehaviour:
   _layer: Enemy
   _health: 100
   _damage: 2
+  fireRate: 0.5
+  movementSpeed: 0.1
+  nextMovementTime: 0
+  player: {fileID: 175135654}
 --- !u!212 &1208857637
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -1461,6 +1473,10 @@ MonoBehaviour:
   _layer: Enemy
   _health: 100
   _damage: 2
+  fireRate: 0.5
+  movementSpeed: 0.1
+  nextMovementTime: 0
+  player: {fileID: 175135654}
 --- !u!212 &1387228921
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -1614,6 +1630,10 @@ MonoBehaviour:
   _layer: Enemy
   _health: 100
   _damage: 2
+  fireRate: 0.5
+  movementSpeed: 0.1
+  nextMovementTime: 0
+  player: {fileID: 175135654}
 --- !u!212 &1393973082
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -1851,6 +1871,10 @@ MonoBehaviour:
   _layer: Enemy
   _health: 100
   _damage: 2
+  fireRate: 0.5
+  movementSpeed: 0.1
+  nextMovementTime: 0
+  player: {fileID: 175135654}
 --- !u!212 &1499589815
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -2172,6 +2196,10 @@ MonoBehaviour:
   _layer: Enemy
   _health: 100
   _damage: 2
+  fireRate: 0.5
+  movementSpeed: 0.1
+  nextMovementTime: 0
+  player: {fileID: 175135654}
 --- !u!212 &1831962121
 SpriteRenderer:
   m_ObjectHideFlags: 0
