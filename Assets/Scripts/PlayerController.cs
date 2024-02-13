@@ -15,7 +15,9 @@ public class PlayerController : MonoBehaviour, IDamageable
     public float damage { get => _damage; set => _damage = value; }
     public string _layer = "Player";
     public string layer { get => _layer; set => _layer = value; }
-
+    private float nextFireTime = 0.0f;
+    // Default firerate is 0.5f (attack each half a secod) maximum fireRate will be 0.1f
+    private float fireRate = 0.5f;
     [SerializeField] FireStrategy defaultGun;
     [SerializeField] FireStrategy rocketGun;
     public GameObject player;
@@ -30,11 +32,13 @@ public class PlayerController : MonoBehaviour, IDamageable
         Debug.DrawLine(new Vector3(0, 0, 0), new Vector3(5, 5, 0), Color.green);
         PlayerMovement();
         PlayerRotation();
-        if (Input.GetKey(KeyCode.Mouse0))
+
+        if (Input.GetKey(KeyCode.Mouse0) && Time.time >= nextFireTime)
         {
 
             defaultGun.FireGun(rightGun, this.gameObject);
             defaultGun.FireGun(leftGun, this.gameObject);
+            nextFireTime = Time.time + fireRate;
         }
     }
     private float startTime;
