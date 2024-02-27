@@ -22,7 +22,6 @@ public class PlayerController : MonoBehaviour, IDamageable
     [SerializeField] FireStrategy rocketGun;
     public GameObject player;
     public GameObject bullet;
-    private float attackRate = 0.2f;
     public Vector2 speed = new(5, 5);
     public Transform rightGun;
     public Transform leftGun;
