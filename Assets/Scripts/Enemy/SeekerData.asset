@@ -17,5 +17,5 @@ MonoBehaviour:
   fireRate: 0
   _layer: Enemy
   _damage: 20
-  movementSpeed: 0.5
+  movementSpeed: 0.009
   rotation: {fileID: 11400000, guid: 301b7eaf1c571db4ea1751a39e84ff25, type: 2}
