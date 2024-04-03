@@ -36,9 +36,12 @@ public class EnemyPool : MonoBehaviour, IObjectPool
     //     The inactive GameObject retrieved from the object pool, or null if none are available.
     public GameObject GetPooledObject()
     {
-        if (!pooledObjects.Peek().activeInHierarchy)
+        if (pooledObjects.Count > 0)
         {
-            return pooledObjects.Dequeue();
+            if (!pooledObjects.Peek().activeInHierarchy)
+            {
+                return pooledObjects.Dequeue();
+            }
         }
         return null;
     }

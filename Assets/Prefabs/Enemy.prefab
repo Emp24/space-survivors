@@ -188,9 +188,9 @@ MonoBehaviour:
   gunPos: {fileID: 7888072783060201435}
   projectile: {fileID: 0}
   _layer: Enemy
-  _health: 100
+  _health: 40
   _damage: 2
-  fireRate: 0.5
+  fireRate: 1
   nextMovementTime: 0
   player: {fileID: 0}
 --- !u!61 &7888072784030674112

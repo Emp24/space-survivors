@@ -25,12 +25,6 @@ public class Enemy : MonoBehaviour, IDamageable
     private float nextFireTime = 0f;
     public GameObject player;
 
-    // public float speed;
-
-    // public void Movement()
-    // {
-
-    // }
 
     void Update()
     {
