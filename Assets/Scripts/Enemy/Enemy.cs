@@ -1,13 +1,15 @@
 using UnityEngine;
 
-public class Enemy : MonoBehaviour, IDamageable
+public class Enemy : MonoBehaviour, IDamageable, IEnemy
 {
+    public EnemyData _enemyData;
+    public EnemyData enemyData { get => _enemyData; set => _enemyData = value; }
     // [SerializeField]
     // private float health;
     [SerializeField]
     public FireStrategy gun;
     [SerializeField]
-    public Transform gunPos;
+    // public Transform gunPos;
     // public float damage;
     public Projectile projectile;
     public string _layer = "Enemy";
@@ -22,18 +24,18 @@ public class Enemy : MonoBehaviour, IDamageable
     public float fireRate = 1f;
     private float movementSpeed = 0.09f;
     public float nextMovementTime = 0f;
-    private float nextFireTime = 0f;
+    // private float nextFireTime = 0f;
     public GameObject player;
 
 
     void Update()
     {
-        if (Time.time >= nextFireTime)
-        {
-            gun.FireGun(gunPos, this.gameObject);
-            nextFireTime = Time.time + fireRate;
+        // if (Time.time >= nextFireTime)
+        // {
+        //     gun.FireGun(gunPos, this.gameObject);
+        //     nextFireTime = Time.time + fireRate;
 
-        }
+        // }
         if (Time.time >= nextMovementTime)
         {
             Movement(player.transform.position);

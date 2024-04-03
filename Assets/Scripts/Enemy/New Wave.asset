@@ -12,4 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d3a71f4f693763343a3e222d7763347b, type: 3}
   m_Name: New Wave
   m_EditorClassIdentifier: 
-  enemies: []
+  enemies:
+  - {fileID: 7888072784030674113, guid: 509aa07ca94dd3f49ad8ecb7e836c4e5, type: 3}
+  - {fileID: 7888072784030674113, guid: 509aa07ca94dd3f49ad8ecb7e836c4e5, type: 3}
+  - {fileID: 7888072784030674113, guid: 509aa07ca94dd3f49ad8ecb7e836c4e5, type: 3}
