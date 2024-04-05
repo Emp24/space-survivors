@@ -22,7 +22,7 @@ public class PlayerController : MonoBehaviour, IDamageable
     [SerializeField] FireStrategy rocketGun;
     public GameObject player;
     public GameObject bullet;
-    public Vector2 speed = new(5, 5);
+    public Vector2 speed = new(20, 20);
     public Transform rightGun;
     public Transform leftGun;
     public Camera cam;
@@ -95,7 +95,10 @@ public class PlayerController : MonoBehaviour, IDamageable
     {
         health -= damage;
     }
+    public void Destroy(GameObject gameObject)
+    {
 
+    }
 
 
 }

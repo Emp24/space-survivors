@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public interface IDamageable
@@ -9,4 +7,5 @@ public interface IDamageable
     float damage { get; set; }
 
     void TakeDamage(float damage);
+    // void Destroy(GameObject gameObject);
 }

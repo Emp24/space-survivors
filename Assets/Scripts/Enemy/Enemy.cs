@@ -4,51 +4,36 @@ public class Enemy : MonoBehaviour, IDamageable, IEnemy
 {
     public EnemyData _enemyData;
     public EnemyData enemyData { get => _enemyData; set => _enemyData = value; }
-    // [SerializeField]
-    // private float health;
-    [SerializeField]
     public FireStrategy gun;
-    [SerializeField]
-    // public Transform gunPos;
-    // public float damage;
-    public Projectile projectile;
-    public string _layer = "Enemy";
-    public string layer { get => _layer; set => _layer = value; }
-
-    [SerializeField]
-    private float _health;
-    [SerializeField]
+    public Transform gunPos;
     private float _damage;
-    public float health { get => _health; set => _health = value; }
+    [HideInInspector]
     public float damage { get => _damage; set => _damage = value; }
-    public float fireRate = 1f;
-    private float movementSpeed = 0.09f;
-    public float nextMovementTime = 0f;
-    // private float nextFireTime = 0f;
+    private float fireRate;
+    private string _layer = "Enemy";
+    public string layer { get => _layer; set => _layer = value; }
+    private float _health;
+    public float health { get => _health; set => _health = value; }
+    private float movementSpeed;
+    private float nextMovementTime = 0f;
+    private float nextFireTime = 0f;
     public GameObject player;
 
+    public void Start()
+    {
+        health = _enemyData.health;
+        damage = _enemyData.damage;
+        fireRate = _enemyData.fireRate;
+        movementSpeed = _enemyData.movementSpeed;
+
+    }
 
     void Update()
     {
-        // if (Time.time >= nextFireTime)
-        // {
-        //     gun.FireGun(gunPos, this.gameObject);
-        //     nextFireTime = Time.time + fireRate;
-
-        // }
-        if (Time.time >= nextMovementTime)
-        {
-            Movement(player.transform.position);
-            Rotation(player.transform.position);
-            nextMovementTime = Time.time + movementSpeed;
-        }
-        // StartCoroutine(Movement());
-
-        // if (Time.time >= nextFireTime)
-        // {
-        //     Movement(new Vector2(0, 0));
-        // }
-        DestroyEnemy();
+        Shoot();
+        Rotation(player.transform.position);
+        // Movement(player.transform.position);
+        // Destroy(gameObject);
     }
 
     public void OnCollisionEnter2D(Collision2D other)
@@ -62,14 +47,14 @@ public class Enemy : MonoBehaviour, IDamageable, IEnemy
         }
     }
 
-    public void DestroyEnemy()
-    {
+    // public void Destroy(GameObject gameObject)
+    // {
 
-        if (health <= 0)
-        {
-            Destroy(gameObject);
-        }
-    }
+    //     if (health <= 0)
+    //     {
+    //         Destroy(gameObject);
+    //     }
+    // }
 
     public void TakeDamage(float damage)
     {
@@ -77,11 +62,19 @@ public class Enemy : MonoBehaviour, IDamageable, IEnemy
     }
     public void Movement(Vector2 playerPosition)
     {
-        transform.position = Vector2.MoveTowards(transform.position, playerPosition, 10 * Time.deltaTime);
+        transform.position = Vector2.MoveTowards(transform.position, playerPosition, 1 * Time.deltaTime);
     }
     public void Rotation(Vector2 playerPosition)
     {
-        float angle = Mathf.Atan2(playerPosition.y, playerPosition.x) * Mathf.Rad2Deg;
-        transform.rotation = Quaternion.Euler(new Vector3(0, 0, angle - 90f));
+        _enemyData.rotation.Rotation(player.transform, this.gameObject.transform);
+        Debug.Log("current enemy rotation:" + transform.rotation);
+    }
+    public void Shoot()
+    {
+        if (Time.time >= nextFireTime)
+        {
+            gun.FireGun(gunPos, this.gameObject);
+            nextFireTime = Time.time + fireRate;
+        }
     }
 }
