@@ -33,7 +33,7 @@ public class Enemy : MonoBehaviour, IDamageable, IEnemy
         Shoot();
         Rotation(player.transform.position);
         // Movement(player.transform.position);
-        // Destroy(gameObject);
+        Destroy();
     }
 
     public void OnCollisionEnter2D(Collision2D other)
@@ -47,14 +47,14 @@ public class Enemy : MonoBehaviour, IDamageable, IEnemy
         }
     }
 
-    // public void Destroy(GameObject gameObject)
-    // {
+    public void Destroy()
+    {
 
-    //     if (health <= 0)
-    //     {
-    //         Destroy(gameObject);
-    //     }
-    // }
+        if (health <= 0)
+        {
+            Destroy(gameObject);
+        }
+    }
 
     public void TakeDamage(float damage)
     {

@@ -95,8 +95,12 @@ public class PlayerController : MonoBehaviour, IDamageable
     {
         health -= damage;
     }
-    public void Destroy(GameObject gameObject)
+    public void Destroy()
     {
+        if (health <= 0)
+        {
+            Destroy(gameObject);
+        }
 
     }
 

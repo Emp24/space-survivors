@@ -4,18 +4,19 @@ public class Seeker : MonoBehaviour, IEnemy, IDamageable
 {
     public GameObject player;
     public EnemyData _enemyData;
-    public float nextMovementTime = 0f;
+    private float nextMovementTime = 0f;
     public EnemyData enemyData { get { return _enemyData; } set { _enemyData = value; } }
-    public float _health;
-    public Projectile projectile;
-    public float fireRate;
-    public string _layer = "Enemy";
+    private float _health;
+    private Projectile projectile;
+    private float fireRate;
+    private string _layer = "Enemy";
     public string layer { get => _layer; set => _layer = value; }
     [SerializeField]
     private float _damage;
     public float health { get => _health; set => _health = value; }
+    [HideInInspector]
     public float damage { get => _damage; set => _damage = value; }
-    public float movementSpeed;
+    private float movementSpeed;
 
     public void Awake()
     {
@@ -37,18 +38,18 @@ public class Seeker : MonoBehaviour, IEnemy, IDamageable
             Rotation(player.transform.position);
             nextMovementTime = Time.time + _enemyData.movementSpeed;
         }
-        // Destroy(this.gameObject);
+        Destroy();
 
     }
 
-    // public void Destroy(GameObject gameObject)
-    // {
+    public void Destroy()
+    {
 
-    //     if (health <= 0)
-    //     {
-    //         Destroy(gameObject);
-    //     }
-    // }
+        if (health <= 0)
+        {
+            Destroy(gameObject);
+        }
+    }
 
     public void OnCollisionEnter2D(Collision2D other)
     {

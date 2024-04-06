@@ -7,5 +7,5 @@ public interface IDamageable
     float damage { get; set; }
 
     void TakeDamage(float damage);
-    // void Destroy(GameObject gameObject);
+    void Destroy();
 }
