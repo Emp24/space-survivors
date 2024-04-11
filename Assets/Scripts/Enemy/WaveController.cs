@@ -43,7 +43,7 @@ public class WaveController : MonoBehaviour
             yield return new WaitForSeconds(2f);
             GameObject enemy = wave.Dequeue();
             Debug.Log("Enemy spawned: " + enemy.GetComponent<IEnemy>().enemyData.damage + Time.time.ToString());
-            // spawner.Spawn(enemy);
+            spawner.Spawn(enemy);
         }
     }
 
