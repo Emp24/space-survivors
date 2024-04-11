@@ -26,14 +26,14 @@ public class WaveController : MonoBehaviour
 
     public void Start()
     {
-        ScheduleWaves();
+        StartCoroutine(StartWave());
     }
-    public void ScheduleWaves()
+    public IEnumerator StartWave()
     {
-        Queue<GameObject> currentWave = pooledObjects.Dequeue();
         while (pooledObjects.Count > 0)
         {
-            StartCoroutine(SpawnWave(currentWave));
+            Queue<GameObject> currentWave = pooledObjects.Dequeue();
+            yield return StartCoroutine(SpawnWave(currentWave));
         }
     }
     public IEnumerator SpawnWave(Queue<GameObject> wave)
@@ -43,13 +43,9 @@ public class WaveController : MonoBehaviour
             yield return new WaitForSeconds(2f);
             GameObject enemy = wave.Dequeue();
             Debug.Log("Enemy spawned: " + enemy.GetComponent<IEnemy>().enemyData.damage + Time.time.ToString());
-            // SpawnEnemy(enemy);
+            // spawner.Spawn(enemy);
         }
     }
 
-    public void SpawnEnemy(GameObject enemy)
-    {
-        spawner.Spawn(enemy);
-    }
 
 }
