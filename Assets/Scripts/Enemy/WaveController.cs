@@ -1,4 +1,6 @@
+using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class WaveController : MonoBehaviour
@@ -11,19 +13,43 @@ public class WaveController : MonoBehaviour
     //Enemy should be represented by a sprite and a bunch of stats 
     public GameObject player;
     public EnemySpawner spawner;
-    private float nextSpawnTime = 0f;
-    public float spawnRate = 1f;
+    private WaveLoader waveLoader;
+    public List<Wave> waves;
+    //Contains the waves of enemeis to be spawned
+    private Queue<Queue<GameObject>> pooledObjects;
     public void Awake()
     {
+        waveLoader = new WaveLoader(waves);
+        pooledObjects = waveLoader.IntializeWaves();
         spawner = new EnemySpawner(player.transform, new List<float>() { -6f, 0f, 6f }, new Vector2(-6f, 6f));
     }
 
-    public void Update()
+    public void Start()
     {
-        if (Time.time >= nextSpawnTime)
+        ScheduleWaves();
+    }
+    public void ScheduleWaves()
+    {
+        Queue<GameObject> currentWave = pooledObjects.Dequeue();
+        while (pooledObjects.Count > 0)
         {
-            spawner.Spawn();
-            nextSpawnTime = Time.time + spawnRate;
+            StartCoroutine(SpawnWave(currentWave));
         }
     }
+    public IEnumerator SpawnWave(Queue<GameObject> wave)
+    {
+        while (wave.Count > 0)
+        {
+            yield return new WaitForSeconds(2f);
+            GameObject enemy = wave.Dequeue();
+            Debug.Log("Enemy spawned: " + enemy.GetComponent<IEnemy>().enemyData.damage + Time.time.ToString());
+            // SpawnEnemy(enemy);
+        }
+    }
+
+    public void SpawnEnemy(GameObject enemy)
+    {
+        spawner.Spawn(enemy);
+    }
+
 }

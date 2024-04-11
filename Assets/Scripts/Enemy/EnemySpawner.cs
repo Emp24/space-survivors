@@ -14,9 +14,9 @@ public class EnemySpawner
         this.yPositions = yPositions;
     }
 
-    public void Spawn()
+    public void Spawn(GameObject enemy)
     {
-        GameObject enemy = EnemyPool.SharedInstance.GetPooledObject();
+        // GameObject enemy = EnemyPool.SharedInstance.GetPooledObject();
 
         if (enemy != null)
         {
@@ -24,6 +24,7 @@ public class EnemySpawner
             int randomIndex = Random.Range(0, xPositions.Count);
             enemy.transform.position = new Vector2(player.position.x + xPositions[randomIndex], player.position.y + Random.Range(yPositions.x, yPositions.y));
             //Could intialize the enemy stats here 
+
             enemy.GetComponent<Enemy>().player = player.gameObject;
             enemy.SetActive(true);
             // Debug.Log("Player position: " + player.position);
@@ -31,4 +32,6 @@ public class EnemySpawner
             // Debug.Log("Random index: " + randomIndex);
         }
     }
+
+
 }

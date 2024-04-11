@@ -14,7 +14,6 @@ public class Enemy : MonoBehaviour, IDamageable, IEnemy
     public string layer { get => _layer; set => _layer = value; }
     private float _health;
     public float health { get => _health; set => _health = value; }
-    private float movementSpeed;
     private float nextMovementTime = 0f;
     private float nextFireTime = 0f;
     public GameObject player;
@@ -24,15 +23,13 @@ public class Enemy : MonoBehaviour, IDamageable, IEnemy
         health = _enemyData.health;
         damage = _enemyData.damage;
         fireRate = _enemyData.fireRate;
-        movementSpeed = _enemyData.movementSpeed;
-
     }
 
     void Update()
     {
         Shoot();
         Rotation(player.transform.position);
-        // Movement(player.transform.position);
+        Movement(player.transform.position);
         Destroy();
     }
 
@@ -60,15 +57,18 @@ public class Enemy : MonoBehaviour, IDamageable, IEnemy
     {
         health -= damage;
     }
+
     public void Movement(Vector2 playerPosition)
     {
         transform.position = Vector2.MoveTowards(transform.position, playerPosition, 1 * Time.deltaTime);
     }
+
     public void Rotation(Vector2 playerPosition)
     {
         _enemyData.rotation.Rotation(player.transform, this.gameObject.transform);
         Debug.Log("current enemy rotation:" + transform.rotation);
     }
+
     public void Shoot()
     {
         if (Time.time >= nextFireTime)
