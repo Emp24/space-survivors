@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: New Wave
   m_EditorClassIdentifier: 
   enemies:
-  - {fileID: 7888072784030674113, guid: 509aa07ca94dd3f49ad8ecb7e836c4e5, type: 3}
-  - {fileID: 7888072784030674113, guid: 509aa07ca94dd3f49ad8ecb7e836c4e5, type: 3}
-  - {fileID: 7888072784030674113, guid: 509aa07ca94dd3f49ad8ecb7e836c4e5, type: 3}
+  - {fileID: 8285419214244362244, guid: 1ba7c7df789652a489f829e09e363cc8, type: 3}
+  - {fileID: 8285419214244362244, guid: 1ba7c7df789652a489f829e09e363cc8, type: 3}
+  - {fileID: 8285419214244362244, guid: 1ba7c7df789652a489f829e09e363cc8, type: 3}

@@ -23,6 +23,7 @@ public class EnemySpawner
 
             int randomIndex = Random.Range(0, xPositions.Count);
             enemy.transform.position = new Vector2(player.position.x + xPositions[randomIndex], player.position.y + Random.Range(yPositions.x, yPositions.y));
+            Debug.Log("<color=green> enemy coordinates: " + enemy.transform.position + "</color>");
             //Could intialize the enemy stats here 
 
             enemy.GetComponent<Seeker>().player = player.gameObject;

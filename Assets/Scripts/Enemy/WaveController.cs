@@ -21,7 +21,7 @@ public class WaveController : MonoBehaviour
     {
         waveLoader = new WaveLoader(waves);
         pooledObjects = waveLoader.IntializeWaves();
-        spawner = new EnemySpawner(player.transform, new List<float>() { -6f, 0f, 6f }, new Vector2(-6f, 6f));
+        spawner = new EnemySpawner(player.transform, new List<float>() { -10f, 10f }, new Vector2(-10f, 10f));
     }
 
     public void Start()
