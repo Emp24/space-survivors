@@ -54,11 +54,15 @@ public class Seeker : MonoBehaviour, IEnemy, IDamageable
     public void OnCollisionEnter2D(Collision2D other)
     {
         string collidingObjectTag = other.gameObject.tag;
-        string sourceTag = other.gameObject.GetComponent<Projectile>().source.tag;
+        string sourceTag = other.gameObject?.GetComponent<Projectile>()?.source?.tag;
 
         if (collidingObjectTag == "Projectile" && sourceTag == "Player")
         {
             TakeDamage(other.gameObject.GetComponent<Projectile>().damage);
+        }
+        if (collidingObjectTag == "Player")
+        {
+            health = 0;
         }
     }
 

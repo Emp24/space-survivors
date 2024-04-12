@@ -57,11 +57,15 @@ public class PlayerController : MonoBehaviour, IDamageable
     public void OnCollisionEnter2D(Collision2D other)
     {
         string collidingObjectTag = other.gameObject.tag;
-        string sourceTag = other.gameObject.GetComponent<Projectile>().source.tag;
+        string sourceTag = other.gameObject.GetComponent<Projectile>()?.source?.tag;
 
         if (collidingObjectTag == "Projectile" && sourceTag == "Enemy")
         {
             TakeDamage(other.gameObject.GetComponent<Projectile>().damage);
+        }
+        if (collidingObjectTag == "Enemy")
+        {
+            TakeDamage(other.gameObject.GetComponent<IEnemy>().enemyData.damage);
         }
     }
     public void PlayerMovement()
