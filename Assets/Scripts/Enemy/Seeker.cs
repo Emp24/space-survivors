@@ -25,12 +25,12 @@ public class Seeker : MonoBehaviour, IEnemy, IDamageable
         damage = _enemyData.damage;
         fireRate = _enemyData.fireRate;
         movementSpeed = _enemyData.movementSpeed;
+        player = _enemyData.spawnPoint;
 
     }
 
     public void Update()
     {
-
         Movement(player.transform.position);
         if (Time.time >= nextMovementTime)
         {

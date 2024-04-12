@@ -1,38 +1,33 @@
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class EnemySpawner
 {
-    public Transform player;
+    public Transform spawnPoint;
     private List<float> xPositions;
     private Vector2 yPositions;
 
-    public EnemySpawner(Transform player, List<float> xPositions, Vector2 yPositions)
+    public EnemySpawner(Transform spawnPoint, List<float> xPositions, Vector2 yPositions)
     {
-        this.player = player;
+        this.spawnPoint = spawnPoint;
         this.xPositions = xPositions;
         this.yPositions = yPositions;
     }
 
     public void Spawn(GameObject enemy)
     {
-        // GameObject enemy = EnemyPool.SharedInstance.GetPooledObject();
-
         if (enemy != null)
         {
 
             int randomIndex = Random.Range(0, xPositions.Count);
-            enemy.transform.position = new Vector2(player.position.x + xPositions[randomIndex], player.position.y + Random.Range(yPositions.x, yPositions.y));
+            enemy.transform.position = new Vector2(spawnPoint.position.x + xPositions[randomIndex], spawnPoint.position.y + Random.Range(yPositions.x, yPositions.y));
             Debug.Log("<color=green> enemy coordinates: " + enemy.transform.position + "</color>");
             //Could intialize the enemy stats here 
 
-            enemy.GetComponent<Seeker>().player = player.gameObject;
+            enemy.GetComponent<IEnemy>().enemyData.spawnPoint = spawnPoint.gameObject;
             enemy.SetActive(true);
-            // Debug.Log("Player position: " + player.position);
-            // Debug.Log("Enemy x position:" + xPositions[randomIndex] + player.position.x);
-            // Debug.Log("Random index: " + randomIndex);
         }
     }
-
 
 }

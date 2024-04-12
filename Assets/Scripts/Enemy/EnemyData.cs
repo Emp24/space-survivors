@@ -14,6 +14,7 @@ public class EnemyData : ScriptableObject
     public float damage { get => _damage; set => _damage = value; }
     public float movementSpeed;
     public RotationStrategy rotation;
+    public GameObject spawnPoint;
 
 }
 

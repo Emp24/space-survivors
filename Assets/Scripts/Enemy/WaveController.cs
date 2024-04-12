@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class WaveController : MonoBehaviour
@@ -17,6 +16,7 @@ public class WaveController : MonoBehaviour
     public List<Wave> waves;
     //Contains the waves of enemeis to be spawned
     private Queue<Queue<GameObject>> pooledObjects;
+    private float spawnRate = 0.5f;
     public void Awake()
     {
         waveLoader = new WaveLoader(waves);
@@ -40,7 +40,7 @@ public class WaveController : MonoBehaviour
     {
         while (wave.Count > 0)
         {
-            yield return new WaitForSeconds(2f);
+            yield return new WaitForSeconds(spawnRate);
             GameObject enemy = wave.Dequeue();
             Debug.Log("Enemy spawned: " + enemy.GetComponent<IEnemy>().enemyData.damage + Time.time.ToString());
             spawner.Spawn(enemy);
