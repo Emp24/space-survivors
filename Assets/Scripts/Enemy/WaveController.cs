@@ -12,15 +12,15 @@ public class WaveController : MonoBehaviour
     //Enemy should be represented by a sprite and a bunch of stats 
     public GameObject player;
     public EnemySpawner spawner;
-    private WaveLoader waveLoader;
+    // private WaveLoader waveLoader;
     public List<Wave> waves;
     //Contains the waves of enemeis to be spawned
     private Queue<Queue<GameObject>> pooledObjects;
     private float spawnRate = 0.5f;
     public void Awake()
     {
-        waveLoader = new WaveLoader(waves);
-        pooledObjects = waveLoader.IntializeWaves();
+        // waveLoader = new WaveLoader(waves);
+        pooledObjects = IntializeWaves();
         spawner = new EnemySpawner(player.transform, new List<float>() { -10f, 10f }, new Vector2(-10f, 10f));
     }
 
@@ -47,5 +47,22 @@ public class WaveController : MonoBehaviour
         }
     }
 
+    public Queue<Queue<GameObject>> IntializeWaves()
+    {
+        pooledObjects = new Queue<Queue<GameObject>>();
+        GameObject tmp;
+        foreach (Wave wave in waves)
+        {
+            Queue<GameObject> tmpWave = new Queue<GameObject>();
+            foreach (GameObject enemy in wave.enemies)
+            {
+                tmp = Instantiate(enemy);
+                tmp.SetActive(false);
+                tmpWave.Enqueue(tmp);
+            }
+            pooledObjects.Enqueue(tmpWave);
+        }
+        return pooledObjects;
+    }
 
 }
