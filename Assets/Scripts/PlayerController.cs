@@ -1,5 +1,6 @@
 using UnityEditor.Callbacks;
 using UnityEngine;
+using UnityEngine.UI;
 
 
 
@@ -26,6 +27,19 @@ public class PlayerController : MonoBehaviour, IDamageable
     public Transform rightGun;
     public Transform leftGun;
     public Camera cam;
+    public Slider healthBar;
+    private float startTime;
+    private float journeyLength;
+    void Start()
+    {
+        healthBar.value = health / 100;
+        // Keep a note of the time the movement started.
+        startTime = Time.time;
+
+        // Calculate the journey length.
+        journeyLength = Vector3.Distance(new Vector3(-0.01f, -0.68f, 0), new Vector3(50, 50, 0));
+    }
+
     void Update()
     {
         Debug.DrawLine(new Vector3(0, 0, 0), new Vector3(5, 5, 0), Color.green);
@@ -40,19 +54,7 @@ public class PlayerController : MonoBehaviour, IDamageable
             nextFireTime = Time.time + fireRate;
         }
     }
-    private float startTime;
-    private float journeyLength;
 
-
-
-    void Start()
-    {
-        // Keep a note of the time the movement started.
-        startTime = Time.time;
-
-        // Calculate the journey length.
-        journeyLength = Vector3.Distance(new Vector3(-0.01f, -0.68f, 0), new Vector3(50, 50, 0));
-    }
 
     public void OnCollisionEnter2D(Collision2D other)
     {
@@ -98,6 +100,7 @@ public class PlayerController : MonoBehaviour, IDamageable
     public void TakeDamage(float damage)
     {
         health -= damage;
+        healthBar.value = health / 100;
     }
     public void Destroy()
     {
