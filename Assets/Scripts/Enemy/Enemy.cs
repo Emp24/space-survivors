@@ -22,6 +22,7 @@ public class Enemy : MonoBehaviour, IDamageable, IEnemy
         health = _enemyData.health;
         damage = _enemyData.damage;
         fireRate = _enemyData.fireRate;
+        player = _enemyData.spawnPoint;
     }
 
     void Update()

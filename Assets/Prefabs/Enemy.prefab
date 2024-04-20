@@ -184,14 +184,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f1b46a44d4dc014996289f59f95ac96, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _enemyData: {fileID: 11400000, guid: 9909d794d8d4ef04c866873b23b59472, type: 2}
   gun: {fileID: 11400000, guid: 248be819180255a4bb2ffe97b7ff754e, type: 2}
   gunPos: {fileID: 7888072783060201435}
-  projectile: {fileID: 0}
-  _layer: Enemy
-  _health: 40
-  _damage: 2
-  fireRate: 1
-  nextMovementTime: 0
   player: {fileID: 0}
 --- !u!61 &7888072784030674112
 BoxCollider2D:
