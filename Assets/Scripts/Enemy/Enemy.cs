@@ -10,7 +10,7 @@ public class Enemy : MonoBehaviour, IDamageable, IEnemy
     [HideInInspector]
     public float damage { get => _damage; set => _damage = value; }
     private float fireRate;
-    private string _layer = "Enemy";
+    private string _layer = "EnemyProjectile";
     public string layer { get => _layer; set => _layer = value; }
     private float _health;
     public float health { get => _health; set => _health = value; }

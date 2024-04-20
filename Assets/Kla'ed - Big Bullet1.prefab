@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: -494861890706030567}
   - component: {fileID: -3385143434647545134}
   - component: {fileID: 5929241822100573779}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Kla'ed - Big Bullet1
   m_TagString: Projectile
   m_Icon: {fileID: 0}

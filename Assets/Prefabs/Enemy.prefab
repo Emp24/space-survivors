@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7888072783060201435}
   - component: {fileID: 7888072783060201434}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Triangle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -97,7 +97,7 @@ GameObject:
   - component: {fileID: 7888072784030674113}
   - component: {fileID: 7888072784030674112}
   - component: {fileID: 7888072784030674175}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Enemy
   m_TagString: Enemy
   m_Icon: {fileID: 0}

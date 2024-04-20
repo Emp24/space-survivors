@@ -14,7 +14,7 @@ public class PlayerController : MonoBehaviour, IDamageable
     private float _damage;
     public float health { get => _health; set => _health = value; }
     public float damage { get => _damage; set => _damage = value; }
-    public string _layer = "Player";
+    public string _layer = "PlayerProjectile";
     public string layer { get => _layer; set => _layer = value; }
     private float nextFireTime = 0.0f;
     // Default firerate is 0.5f (attack each half a secod) maximum fireRate will be 0.1f
