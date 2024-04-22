@@ -136,6 +136,7 @@ GameObject:
   - component: {fileID: 175135657}
   - component: {fileID: 175135658}
   - component: {fileID: 175135659}
+  - component: {fileID: 175135660}
   m_Layer: 3
   m_Name: Player
   m_TagString: Player
@@ -238,6 +239,7 @@ MonoBehaviour:
   leftGun: {fileID: 928852819}
   cam: {fileID: 519420031}
   healthBar: {fileID: 747147137}
+  playerAnimator: {fileID: 175135660}
 --- !u!61 &175135658
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -285,6 +287,27 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!95 &175135660
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 175135654}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 5806eb62461c46e45983334b2bd4d197, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &295555476
 GameObject:
   m_ObjectHideFlags: 0
@@ -498,7 +521,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 8
+  orthographic size: 10
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2

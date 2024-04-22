@@ -28,6 +28,7 @@ public class PlayerController : MonoBehaviour, IDamageable
     public Transform leftGun;
     public Camera cam;
     public Slider healthBar;
+    public Animator playerAnimator;
     private float startTime;
     private float journeyLength;
     void Start()
@@ -48,10 +49,14 @@ public class PlayerController : MonoBehaviour, IDamageable
 
         if (Input.GetKey(KeyCode.Mouse0) && Time.time >= nextFireTime)
         {
-
+            playerAnimator.SetTrigger("Fire");
             defaultGun.FireGun(rightGun, this.gameObject);
             defaultGun.FireGun(leftGun, this.gameObject);
             nextFireTime = Time.time + fireRate;
+        }
+        else
+        {
+            playerAnimator.SetTrigger("StopFire");
         }
     }
 
