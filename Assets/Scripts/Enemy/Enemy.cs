@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class Enemy : MonoBehaviour, IDamageable, IEnemy
@@ -16,7 +17,8 @@ public class Enemy : MonoBehaviour, IDamageable, IEnemy
     public float health { get => _health; set => _health = value; }
     private float nextFireTime = 0f;
     public GameObject player;
-
+    private bool isDestroyed = false;
+    public Animator animator;
     public void Start()
     {
         health = _enemyData.health;
@@ -27,7 +29,11 @@ public class Enemy : MonoBehaviour, IDamageable, IEnemy
 
     void Update()
     {
-        Shoot();
+        if (!isDestroyed)
+        {
+
+            Shoot();
+        }
         Rotation(player.transform.position);
         Movement(player.transform.position);
         Destroy();
@@ -44,13 +50,27 @@ public class Enemy : MonoBehaviour, IDamageable, IEnemy
         }
     }
 
-    public void Destroy()
+    public bool PlayDestroyAnimation()
+    {
+
+        animator.SetBool("isDestroyed", true);
+        return true;
+        // Destroy(gameObject);
+    }
+    public IEnumerator DestoryCoroutine()
     {
 
         if (health <= 0)
         {
+            isDestroyed = true;
+            PlayDestroyAnimation();
+            yield return new WaitForSeconds(0.4f);
             Destroy(gameObject);
         }
+    }
+    public void Destroy()
+    {
+        StartCoroutine(DestoryCoroutine());
     }
 
     public void TakeDamage(float damage)

@@ -878,6 +878,7 @@ MonoBehaviour:
   gun: {fileID: 11400000, guid: 248be819180255a4bb2ffe97b7ff754e, type: 2}
   gunPos: {fileID: 0}
   player: {fileID: 175135654}
+  animator: {fileID: 0}
 --- !u!212 &877261165
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -1114,6 +1115,32 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1 &991256131 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7888072784030674117, guid: 509aa07ca94dd3f49ad8ecb7e836c4e5, type: 3}
+  m_PrefabInstance: {fileID: 7888072783713070623}
+  m_PrefabAsset: {fileID: 0}
+--- !u!95 &991256137
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 991256131}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 13ffdfee2b2835f48a36b66795393c2b, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &1208857633
 GameObject:
   m_ObjectHideFlags: 0
@@ -1197,6 +1224,7 @@ MonoBehaviour:
   gun: {fileID: 11400000, guid: 248be819180255a4bb2ffe97b7ff754e, type: 2}
   gunPos: {fileID: 0}
   player: {fileID: 175135654}
+  animator: {fileID: 0}
 --- !u!212 &1208857637
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -1526,6 +1554,7 @@ MonoBehaviour:
   gun: {fileID: 11400000, guid: 248be819180255a4bb2ffe97b7ff754e, type: 2}
   gunPos: {fileID: 0}
   player: {fileID: 175135654}
+  animator: {fileID: 0}
 --- !u!212 &1387228921
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -1677,6 +1706,7 @@ MonoBehaviour:
   gun: {fileID: 11400000, guid: 248be819180255a4bb2ffe97b7ff754e, type: 2}
   gunPos: {fileID: 0}
   player: {fileID: 175135654}
+  animator: {fileID: 0}
 --- !u!212 &1393973082
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -1988,6 +2018,7 @@ MonoBehaviour:
   gun: {fileID: 11400000, guid: 248be819180255a4bb2ffe97b7ff754e, type: 2}
   gunPos: {fileID: 0}
   player: {fileID: 175135654}
+  animator: {fileID: 0}
 --- !u!212 &1499589815
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -2428,6 +2459,7 @@ MonoBehaviour:
   gun: {fileID: 11400000, guid: 248be819180255a4bb2ffe97b7ff754e, type: 2}
   gunPos: {fileID: 0}
   player: {fileID: 175135654}
+  animator: {fileID: 0}
 --- !u!212 &1831962121
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -2780,6 +2812,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 175135654}
     - target: {fileID: 7888072784030674113, guid: 509aa07ca94dd3f49ad8ecb7e836c4e5, type: 3}
+      propertyPath: animator
+      value: 
+      objectReference: {fileID: 991256137}
+    - target: {fileID: 7888072784030674113, guid: 509aa07ca94dd3f49ad8ecb7e836c4e5, type: 3}
       propertyPath: fireRate
       value: 0.7
       objectReference: {fileID: 0}
@@ -2852,22 +2888,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 8285419213960034444, guid: 1ba7c7df789652a489f829e09e363cc8, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 8285419214244362244, guid: 1ba7c7df789652a489f829e09e363cc8, type: 3}
       propertyPath: m_Name
       value: Seeker
       objectReference: {fileID: 0}
-    - target: {fileID: 8285419214244362244, guid: 1ba7c7df789652a489f829e09e363cc8, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8285419214244362246, guid: 1ba7c7df789652a489f829e09e363cc8, type: 3}
-      propertyPath: m_Sprite
-      value: 
-      objectReference: {fileID: 21300000, guid: bcbed346947ad064b849c111616b1a65, type: 3}
     - target: {fileID: 8285419214244362247, guid: 1ba7c7df789652a489f829e09e363cc8, type: 3}
       propertyPath: m_RootOrder
       value: 14
@@ -2916,13 +2940,5 @@ PrefabInstance:
       propertyPath: player
       value: 
       objectReference: {fileID: 175135654}
-    - target: {fileID: 8285419214244362266, guid: 1ba7c7df789652a489f829e09e363cc8, type: 3}
-      propertyPath: m_SpriteTilingProperty.oldSize.x
-      value: 0.64
-      objectReference: {fileID: 0}
-    - target: {fileID: 8285419214244362266, guid: 1ba7c7df789652a489f829e09e363cc8, type: 3}
-      propertyPath: m_SpriteTilingProperty.oldSize.y
-      value: 0.64
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1ba7c7df789652a489f829e09e363cc8, type: 3}
