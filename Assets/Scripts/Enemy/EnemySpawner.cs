@@ -26,7 +26,7 @@ public class EnemySpawner
             //Could intialize the enemy stats here 
             //Inject new enemy data for stats
 
-            newEnemyData._health = 20f;
+            // newEnemyData._health = 20f;
             newEnemyData.spawnPoint = spawnPoint.gameObject;
 
             enemy.GetComponent<IEnemy>().enemyData = newEnemyData;

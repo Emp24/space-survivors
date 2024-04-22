@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class Seeker : MonoBehaviour, IEnemy, IDamageable
@@ -17,7 +18,7 @@ public class Seeker : MonoBehaviour, IEnemy, IDamageable
     [HideInInspector]
     public float damage { get => _damage; set => _damage = value; }
     private float movementSpeed;
-
+    public Animator animator;
     public void Awake()
     {
 
@@ -39,18 +40,30 @@ public class Seeker : MonoBehaviour, IEnemy, IDamageable
             nextMovementTime = Time.time + _enemyData.movementSpeed;
         }
         Destroy();
-
     }
 
-    public void Destroy()
+    public bool PlayDestroyAnimation()
+    {
+
+        animator.SetBool("isDestroyed", true);
+        return true;
+        // Destroy(gameObject);
+    }
+    public IEnumerator DestoryCoroutine()
     {
 
         if (health <= 0)
         {
+
+            PlayDestroyAnimation();
+            yield return new WaitForSeconds(0.4f);
             Destroy(gameObject);
         }
     }
-
+    public void Destroy()
+    {
+        StartCoroutine(DestoryCoroutine());
+    }
     public void OnCollisionEnter2D(Collision2D other)
     {
         string collidingObjectTag = other.gameObject.tag;

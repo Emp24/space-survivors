@@ -12,10 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9ff4bb11266e0dd4cab65105531aae26, type: 3}
   m_Name: New Enemy Data
   m_EditorClassIdentifier: 
-  _health: 50
+  _health: 40
   projectile: {fileID: 0}
   fireRate: 0.7
   _layer: Enemy
   _damage: 10
   movementSpeed: 0.2
   rotation: {fileID: 11400000, guid: 301b7eaf1c571db4ea1751a39e84ff25, type: 2}
+  spawnPoint: {fileID: 0}
