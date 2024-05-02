@@ -88,7 +88,7 @@ public class Enemy : MonoBehaviour, IDamageable, IEnemy
     public void Rotation(Vector2 playerPosition)
     {
         _enemyData.rotation.Rotation(player.transform, this.gameObject.transform);
-        Debug.Log("current enemy rotation:" + transform.rotation);
+        // Debug.Log("current enemy rotation:" + transform.rotation);
     }
 
     public void Shoot()

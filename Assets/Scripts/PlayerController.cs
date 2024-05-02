@@ -1,4 +1,3 @@
-using UnityEditor.Callbacks;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -58,6 +57,7 @@ public class PlayerController : MonoBehaviour, IDamageable
         {
             playerAnimator.SetTrigger("StopFire");
         }
+        ScanSurrounding();
     }
 
 
@@ -73,6 +73,10 @@ public class PlayerController : MonoBehaviour, IDamageable
         if (collidingObjectTag == "Enemy")
         {
             TakeDamage(other.gameObject.GetComponent<IEnemy>().enemyData.damage);
+        }
+        if (collidingObjectTag == "ExperienceBlob")
+        {
+            Debug.Log("increase exp");
         }
     }
     public void PlayerMovement()
@@ -115,6 +119,24 @@ public class PlayerController : MonoBehaviour, IDamageable
         }
 
     }
+    public void ScanSurrounding()
+    {
+        Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, 5f, LayerMask.GetMask("Consumables"));
+        foreach (Collider2D collider in colliders)
+        {
+            if (collider.gameObject != gameObject)
+            {
+                Debug.Log(collider.gameObject.name + " in range");
+                SuckExpBlobs(collider.gameObject);
+            }
+        }
 
+    }
+
+    public void SuckExpBlobs(GameObject blob)
+    {
+
+        blob.transform.position = Vector2.MoveTowards(blob.transform.position, transform.position, 10 * Time.deltaTime);
+    }
 
 }
