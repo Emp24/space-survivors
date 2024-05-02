@@ -58,6 +58,7 @@ public class Seeker : MonoBehaviour, IEnemy, IDamageable
             PlayDestroyAnimation();
             yield return new WaitForSeconds(0.4f);
             Destroy(gameObject);
+            OnDestruction();
         }
     }
     public void Destroy()
@@ -91,5 +92,9 @@ public class Seeker : MonoBehaviour, IEnemy, IDamageable
     public void Rotation(Vector2 playerPosition)
     {
         _enemyData.rotation.Rotation(player.transform, this.gameObject.transform);
+    }
+    public void OnDestruction()
+    {
+        ExperienceBlobPool.SharedInstance.SpawnObject(transform);
     }
 }

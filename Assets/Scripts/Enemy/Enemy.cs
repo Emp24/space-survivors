@@ -19,6 +19,7 @@ public class Enemy : MonoBehaviour, IDamageable, IEnemy
     public GameObject player;
     private bool isDestroyed = false;
     public Animator animator;
+
     public void Start()
     {
         health = _enemyData.health;
@@ -66,6 +67,7 @@ public class Enemy : MonoBehaviour, IDamageable, IEnemy
             PlayDestroyAnimation();
             yield return new WaitForSeconds(0.4f);
             Destroy(gameObject);
+            OnDestruction();
         }
     }
     public void Destroy()
@@ -96,5 +98,9 @@ public class Enemy : MonoBehaviour, IDamageable, IEnemy
             gun.FireGun(gunPos, this.gameObject);
             nextFireTime = Time.time + fireRate;
         }
+    }
+    public void OnDestruction()
+    {
+        ExperienceBlobPool.SharedInstance.SpawnObject(transform);
     }
 }
