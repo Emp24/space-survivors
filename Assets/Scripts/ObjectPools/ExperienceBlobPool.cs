@@ -54,10 +54,11 @@ public class ExperienceBlobPool : MonoBehaviour
         blob.SetActive(false);
         ReturnToPool(blob);
     }
-    public void SpawnObject(Transform transform)
+    public void SpawnObject(Transform transform, float experienceMultiplier)
     {
         GameObject blob = GetPooledObject();
         blob.transform.position = transform.position;
+        blob.GetComponent<ExperienceBlob>().experience = experienceMultiplier;
         blob.SetActive(true);
     }
 }

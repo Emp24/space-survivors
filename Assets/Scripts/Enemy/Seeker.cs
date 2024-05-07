@@ -95,6 +95,6 @@ public class Seeker : MonoBehaviour, IEnemy, IDamageable
     }
     public void OnDestruction()
     {
-        ExperienceBlobPool.SharedInstance.SpawnObject(transform);
+        ExperienceBlobPool.SharedInstance.SpawnObject(transform, 1f);
     }
 }

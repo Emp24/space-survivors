@@ -28,6 +28,9 @@ public class PlayerController : MonoBehaviour, IDamageable
     public Camera cam;
     public Slider healthBar;
     public Animator playerAnimator;
+    private int playerLevel = 1;
+    private float xp = 0;
+    private float nextLevelXp = 10;
     private float startTime;
     private float journeyLength;
     void Start()
@@ -57,10 +60,25 @@ public class PlayerController : MonoBehaviour, IDamageable
         {
             playerAnimator.SetTrigger("StopFire");
         }
+        LevelUp();
         ScanSurrounding();
     }
+    public void LevelUp()
+    {
+        if (xp >= nextLevelXp)
+        {
+            playerLevel++;
+            nextLevelXp += nextLevelXp * 0.2f;
+            xp = 0;
+            Debug.Log("current player level:" + playerLevel);
+        }
+    }
 
-
+    public void GainXP(float amount)
+    {
+        xp += amount;
+        Debug.Log("xp gained:" + xp);
+    }
     public void OnCollisionEnter2D(Collision2D other)
     {
         string collidingObjectTag = other.gameObject.tag;
@@ -76,9 +94,11 @@ public class PlayerController : MonoBehaviour, IDamageable
         }
         if (collidingObjectTag == "ExperienceBlob")
         {
-            Debug.Log("increase exp");
+            float xpGained = other.gameObject.GetComponent<ExperienceBlob>().experience;
+            GainXP(xpGained);
         }
     }
+
     public void PlayerMovement()
     {
         float inputX = Input.GetAxis("Horizontal");

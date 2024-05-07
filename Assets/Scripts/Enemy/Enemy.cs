@@ -101,6 +101,6 @@ public class Enemy : MonoBehaviour, IDamageable, IEnemy
     }
     public void OnDestruction()
     {
-        ExperienceBlobPool.SharedInstance.SpawnObject(transform);
+        ExperienceBlobPool.SharedInstance.SpawnObject(transform, 2f);
     }
 }
