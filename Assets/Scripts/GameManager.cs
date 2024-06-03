@@ -7,6 +7,7 @@ public enum GameState
     PowerMenu,
     GameOver,
     Pause,
+    StartGame,
 }
 //Controls the flow of the game
 public class GameManager : MonoBehaviour
@@ -20,6 +21,7 @@ public class GameManager : MonoBehaviour
         if (instance == null)
         {
             instance = this;
+            DontDestroyOnLoad(gameObject);
         }
         else
         {
@@ -44,6 +46,9 @@ public class GameManager : MonoBehaviour
                 break;
             case GameState.Pause:
                 gameState = GameState.Pause;
+                break;
+            case GameState.StartGame:
+                gameState = GameState.StartGame;
                 break;
         }
         OnGameStateChanged?.Invoke(gameState);

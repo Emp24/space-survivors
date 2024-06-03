@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -28,11 +29,13 @@ public class PlayerController : MonoBehaviour, IDamageable
     public Camera cam;
     public Slider healthBar;
     public Animator playerAnimator;
-    private int playerLevel = 1;
-    private float xp = 0;
-    private float nextLevelXp = 10;
+    public int playerLevel = 1;
+    public float xp = 0;
+    public float nextLevelXp = 10;
     private float startTime;
     private float journeyLength;
+    public Action onPlayerDataUpdated;
+
     void Start()
     {
         healthBar.value = health / 100;
@@ -60,6 +63,7 @@ public class PlayerController : MonoBehaviour, IDamageable
         {
             playerAnimator.SetTrigger("StopFire");
         }
+
         LevelUp();
         ScanSurrounding();
     }
@@ -72,12 +76,14 @@ public class PlayerController : MonoBehaviour, IDamageable
             xp = 0;
             Debug.Log("current player level:" + playerLevel);
         }
+        onPlayerDataUpdated?.Invoke();
     }
 
     public void GainXP(float amount)
     {
         xp += amount;
         Debug.Log("xp gained:" + xp);
+        onPlayerDataUpdated?.Invoke();
     }
     public void OnCollisionEnter2D(Collision2D other)
     {
