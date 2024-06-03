@@ -50,18 +50,22 @@ public class PlayerController : MonoBehaviour, IDamageable
     {
         Debug.DrawLine(new Vector3(0, 0, 0), new Vector3(5, 5, 0), Color.green);
         PlayerMovement();
-        PlayerRotation();
 
-        if (Input.GetKey(KeyCode.Mouse0) && Time.time >= nextFireTime)
+        if (GameManager.instance.gameState == GameState.Playing || GameManager.instance.gameState == GameState.StartGame)
         {
-            playerAnimator.SetTrigger("Fire");
-            defaultGun.FireGun(rightGun, this.gameObject);
-            defaultGun.FireGun(leftGun, this.gameObject);
-            nextFireTime = Time.time + fireRate;
-        }
-        else
-        {
-            playerAnimator.SetTrigger("StopFire");
+            PlayerRotation();
+
+            if (Input.GetKey(KeyCode.Mouse0) && Time.time >= nextFireTime)
+            {
+                playerAnimator.SetTrigger("Fire");
+                defaultGun.FireGun(rightGun, this.gameObject);
+                defaultGun.FireGun(leftGun, this.gameObject);
+                nextFireTime = Time.time + fireRate;
+            }
+            else
+            {
+                playerAnimator.SetTrigger("StopFire");
+            }
         }
 
         LevelUp();
