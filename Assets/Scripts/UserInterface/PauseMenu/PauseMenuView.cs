@@ -5,15 +5,24 @@ public class PauseMenuView : MonoBehaviour
 {
     public GameObject pauseMenuPanel;
     public Button resumeButton;
+    public Button exitButton;
     public void Awake()
     {
         GameManager.instance.OnGameStateChanged += HandleGameStateChanged;
         resumeButton.onClick.AddListener(() => { GameManager.instance.ChangeGameState(GameState.Playing); });
+        exitButton.onClick.AddListener(() => { GameManager.instance.ChangeGameState(GameState.MainMenu); });
+        pauseMenuPanel = GameObject.Find("PauseMenu");
+        Debug.Log(pauseMenuPanel);
+        pauseMenuPanel.SetActive(false);
+    }
+    public void OnDestroy()
+    {
+        GameManager.instance.OnGameStateChanged -= HandleGameStateChanged;
     }
     public void PauseGame()
     {
         Time.timeScale = 0;
-        pauseMenuPanel.SetActive(true);
+        pauseMenuPanel.gameObject.SetActive(true);
     }
     public void ResumeGame()
     {

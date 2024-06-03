@@ -22,6 +22,10 @@ public class MainMenuView : MonoBehaviour
         {
             case GameState.StartGame:
                 SceneManager.LoadScene("SampleScene");
+                Time.timeScale = 1;
+                break;
+            case GameState.MainMenu:
+                SceneManager.LoadScene("MainMenu");
                 break;
         }
 

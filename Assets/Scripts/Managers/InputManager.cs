@@ -6,7 +6,10 @@ public class InputManager : MonoBehaviour
     {
         if (Input.GetKey(KeyCode.Escape))
         {
-            GameManager.instance.ChangeGameState(GameState.Pause);
+            if (GameManager.instance.gameState != GameState.Pause)
+            {
+                GameManager.instance.ChangeGameState(GameState.Pause);
+            }
         }
     }
 }
