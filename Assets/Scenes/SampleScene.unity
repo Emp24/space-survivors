@@ -1647,6 +1647,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1263409901}
   - component: {fileID: 1263409902}
+  - component: {fileID: 1263409903}
   m_Layer: 0
   m_Name: Systems
   m_TagString: Untagged
@@ -1676,7 +1677,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1263409899}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2c8768cf34c1f2c428b088496fe63b7c, type: 3}
   m_Name: 
@@ -1685,6 +1686,22 @@ MonoBehaviour:
   waves:
   - {fileID: 11400000, guid: 1ec065f7536e7434aa6c3dc5415790c2, type: 2}
   - {fileID: 11400000, guid: 1ec065f7536e7434aa6c3dc5415790c2, type: 2}
+--- !u!114 &1263409903
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1263409899}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8d4d9f84658425a49a2ed24e8c840443, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spawnPoints: []
+  enemies:
+  - {fileID: 8285419214244362244, guid: 1ba7c7df789652a489f829e09e363cc8, type: 3}
+  player: {fileID: 175135654}
 --- !u!1 &1265229498
 GameObject:
   m_ObjectHideFlags: 0

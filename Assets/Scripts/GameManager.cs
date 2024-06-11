@@ -14,7 +14,6 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
     public GameState gameState = GameState.MainMenu;
-
     public event Action<GameState> OnGameStateChanged;
     private void Awake()
     {

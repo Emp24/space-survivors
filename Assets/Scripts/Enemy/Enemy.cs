@@ -103,4 +103,12 @@ public class Enemy : MonoBehaviour, IDamageable, IEnemy
     {
         ExperienceBlobPool.SharedInstance.SpawnObject(transform, 2f);
     }
+    public void ResetData()
+    {
+        health = _enemyData.health;
+        damage = _enemyData.damage;
+        fireRate = _enemyData.fireRate;
+        player = _enemyData.spawnPoint;
+    }
 }
+
