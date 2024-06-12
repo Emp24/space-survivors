@@ -79,8 +79,10 @@ public class PlayerController : MonoBehaviour, IDamageable
             nextLevelXp += nextLevelXp * 0.2f;
             xp = 0;
             Debug.Log("current player level:" + playerLevel);
+            GameManager.instance.ChangeGameState(GameState.PowerMenu);
         }
         onPlayerDataUpdated?.Invoke();
+
     }
 
     public void GainXP(float amount)
@@ -167,6 +169,26 @@ public class PlayerController : MonoBehaviour, IDamageable
     {
 
         blob.transform.position = Vector2.MoveTowards(blob.transform.position, transform.position, 10 * Time.deltaTime);
+    }
+
+    public void ApplyPower(int powerId)
+    {
+        Debug.Log("Apply Power: " + powerId);
+        switch (powerId)
+        {
+            case 0:
+                damage *= 2;
+                Debug.Log("player damage:" + damage);
+                break;
+            case 1:
+                speed = new Vector2(speed.x + 0.2f, speed.y + 0.2f);
+                Debug.Log("player speed:" + speed);
+                break;
+            case 2:
+                health += 10;
+                Debug.Log("player health:" + health);
+                break;
+        }
     }
 
 }

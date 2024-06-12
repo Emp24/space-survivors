@@ -47,7 +47,6 @@ public class Seeker : MonoBehaviour, IEnemy, IDamageable
 
         animator.SetBool("isDestroyed", true);
         return true;
-        // Destroy(gameObject);
     }
     public IEnumerator DestoryCoroutine()
     {
@@ -57,7 +56,8 @@ public class Seeker : MonoBehaviour, IEnemy, IDamageable
 
             PlayDestroyAnimation();
             yield return new WaitForSeconds(0.4f);
-            Destroy(gameObject);
+            // Destroy(gameObject);
+            WaveControllerTime.instance.DestoryEnemy(gameObject);
             OnDestruction();
         }
     }
@@ -96,5 +96,14 @@ public class Seeker : MonoBehaviour, IEnemy, IDamageable
     public void OnDestruction()
     {
         ExperienceBlobPool.SharedInstance.SpawnObject(transform, 1f);
+    }
+    public void ResetData()
+    {
+        health = _enemyData.health;
+        damage = _enemyData.damage;
+        fireRate = _enemyData.fireRate;
+        movementSpeed = _enemyData.movementSpeed;
+        player = _enemyData.spawnPoint;
+        animator.SetBool("isDestroyed", false);
     }
 }
