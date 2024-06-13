@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -171,7 +172,9 @@ public class PlayerController : MonoBehaviour, IDamageable
 
         blob.transform.position = Vector2.MoveTowards(blob.transform.position, transform.position, 10 * Time.deltaTime);
     }
-
+    public void TakeDotDamage(float damage, float time)
+    {
+    }
     public void ApplyPower(int powerId)
     {
         Debug.Log("Apply Power: " + powerId);

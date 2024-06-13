@@ -110,5 +110,8 @@ public class Enemy : MonoBehaviour, IDamageable, IEnemy
         fireRate = _enemyData.fireRate;
         player = _enemyData.spawnPoint;
     }
+    public void TakeDotDamage(float damage, float time)
+    {
+    }
 }
 

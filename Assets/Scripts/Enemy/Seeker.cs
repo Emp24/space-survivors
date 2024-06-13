@@ -19,6 +19,7 @@ public class Seeker : MonoBehaviour, IEnemy, IDamageable
     public float damage { get => _damage; set => _damage = value; }
     private float movementSpeed;
     public Animator animator;
+    public bool isTakingDamage = false;
     public void Awake()
     {
 
@@ -83,6 +84,7 @@ public class Seeker : MonoBehaviour, IEnemy, IDamageable
     public void TakeDamage(float damage)
     {
         Debug.Log("Seeker took damage: " + damage);
+        animator.SetBool("isTakingDamage", true);
         health -= damage;
     }
     public void Movement(Vector2 playerPosition)
@@ -97,6 +99,24 @@ public class Seeker : MonoBehaviour, IEnemy, IDamageable
     {
         ExperienceBlobPool.SharedInstance.SpawnObject(transform, 1f);
     }
+
+    public IEnumerator TakeDotDamageCoroutine(float damage, float time)
+    {
+        isTakingDamage = true;
+        yield return new WaitForSeconds(time);
+        TakeDamage(damage);
+        isTakingDamage = false;
+        animator.SetBool("isTakingDamage", false);
+    }
+
+    public void TakeDotDamage(float damage, float time)
+    {
+        if (!isTakingDamage)
+        {
+            animator.SetBool("isTakingDamage", true);
+            StartCoroutine(TakeDotDamageCoroutine(damage, time));
+        }
+    }
     public void ResetData()
     {
         health = _enemyData.health;
@@ -105,5 +125,7 @@ public class Seeker : MonoBehaviour, IEnemy, IDamageable
         movementSpeed = _enemyData.movementSpeed;
         player = _enemyData.spawnPoint;
         animator.SetBool("isDestroyed", false);
+        animator.SetBool("isTakingDamage", false);
+        isTakingDamage = false;
     }
 }

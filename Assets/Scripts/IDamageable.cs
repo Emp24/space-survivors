@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public interface IDamageable
@@ -7,5 +8,6 @@ public interface IDamageable
     float damage { get; set; }
 
     void TakeDamage(float damage);
+    void TakeDotDamage(float damage, float time);
     void Destroy();
 }
