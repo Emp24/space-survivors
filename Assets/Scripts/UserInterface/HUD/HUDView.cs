@@ -1,11 +1,13 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class HUDView : MonoBehaviour
 {
     public PlayerController playerController;
     public TMP_Text experience;
     public TMP_Text level;
+    public Image healthBar;
     public void Awake()
     {
         playerController.onPlayerDataUpdated += UpdateHUD;
@@ -14,6 +16,7 @@ public class HUDView : MonoBehaviour
     {
         UpdateExperience();
         UpdateLevel();
+        UpdateHealth();
     }
 
     public void UpdateExperience()
@@ -24,5 +27,9 @@ public class HUDView : MonoBehaviour
     public void UpdateLevel()
     {
         level.text = "Level: " + playerController.playerLevel.ToString();
+    }
+    public void UpdateHealth()
+    {
+        healthBar.fillAmount = playerController.health / 100f;
     }
 }

@@ -142,6 +142,7 @@ public class PlayerController : MonoBehaviour, IDamageable
     {
         health -= damage;
         healthBar.value = health / 100;
+        onPlayerDataUpdated?.Invoke();
     }
     public void Destroy()
     {
