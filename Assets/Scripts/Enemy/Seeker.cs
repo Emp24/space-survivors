@@ -3,6 +3,13 @@ using UnityEngine;
 
 public class Seeker : MonoBehaviour, IEnemy, IDamageable
 {
+    public AnimationClip idleAnimation;
+    public AnimationClip destroyedAnimation;
+    public AnimationClip takingDamageAnimation;
+    public State currentState;
+    public SeekerDamagedState seekerDamagedState;
+    public SeekerDestroyedState seekerDestroyedState;
+    public SeekerIdleState seekerIdleState;
     public GameObject player;
     public EnemyData _enemyData;
     private float nextMovementTime = 0f;
@@ -20,20 +27,25 @@ public class Seeker : MonoBehaviour, IEnemy, IDamageable
     private float movementSpeed;
     public Animator animator;
     public bool isTakingDamage = false;
-    private bool isDestroying = false;
+    public bool isDestroying = false;
     public void Awake()
     {
-
+        seekerDamagedState = new SeekerDamagedState(takingDamageAnimation);
+        seekerDestroyedState = new SeekerDestroyedState(destroyedAnimation);
+        seekerIdleState = new SeekerIdleState(idleAnimation);
         health = _enemyData.health;
         damage = _enemyData.damage;
         fireRate = _enemyData.fireRate;
         movementSpeed = _enemyData.movementSpeed;
         player = _enemyData.spawnPoint;
+        currentState = seekerIdleState;
+        currentState.EnterState(this);
 
     }
 
     public void Update()
     {
+        currentState.UpdateState(this);
         Movement(player.transform.position);
         if (Time.time >= nextMovementTime)
         {
@@ -41,19 +53,23 @@ public class Seeker : MonoBehaviour, IEnemy, IDamageable
             Rotation(player.transform.position);
             nextMovementTime = Time.time + _enemyData.movementSpeed;
         }
-        Destroy();
+        // Destroy();
     }
-
+    public void SwitchState(State state)
+    {
+        currentState = state;
+        state.EnterState(this);
+    }
     public bool PlayDestroyAnimation()
     {
 
-        animator.Play("seeker-destruction-animation");
+        // animator.Play("seeker-destruction-animation");
         return true;
     }
     public IEnumerator DestoryCoroutine()
     {
         isDestroying = true;
-        PlayDestroyAnimation();
+        // PlayDestroyAnimation();
         yield return new WaitForSeconds(0.1f);
         // Destroy(gameObject);
         WaveControllerTime.instance.DestoryEnemy(gameObject);
@@ -83,8 +99,9 @@ public class Seeker : MonoBehaviour, IEnemy, IDamageable
 
     public void TakeDamage(float damage)
     {
+        isTakingDamage = true;
         Debug.Log("Seeker took damage: " + damage);
-        animator.Play("seeker-take-damage");
+        // animator.Play("seeker-take-damage");
         health -= damage;
     }
     public void Movement(Vector2 playerPosition)

@@ -503,7 +503,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rb: {fileID: 175135659}
   _health: 100
-  _damage: 10
+  _damage: 5
   _layer: PlayerProjectile
   defaultGun: {fileID: 11400000, guid: 248be819180255a4bb2ffe97b7ff754e, type: 2}
   rocketGun: {fileID: 11400000, guid: dfff2950dacec034abaeecdfe520b5ec, type: 2}
