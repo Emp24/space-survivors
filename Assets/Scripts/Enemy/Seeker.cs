@@ -41,30 +41,23 @@ public class Seeker : MonoBehaviour, IEnemy, IDamageable
             Rotation(player.transform.position);
             nextMovementTime = Time.time + _enemyData.movementSpeed;
         }
-        Destroy();
     }
 
     public bool PlayDestroyAnimation()
     {
-
         animator.Play("seeker-destruction-animation");
         return true;
     }
     public IEnumerator DestoryCoroutine()
     {
-        isDestroying = true;
         PlayDestroyAnimation();
         yield return new WaitForSeconds(0.1f);
-        // Destroy(gameObject);
         WaveControllerTime.instance.DestoryEnemy(gameObject);
         OnDestruction();
     }
     public void Destroy()
     {
-        if (health <= 0 && !isDestroying)
-        {
-            StartCoroutine(DestoryCoroutine());
-        }
+        StartCoroutine(DestoryCoroutine());
     }
     public void OnCollisionEnter2D(Collision2D other)
     {
@@ -77,7 +70,7 @@ public class Seeker : MonoBehaviour, IEnemy, IDamageable
         }
         if (collidingObjectTag == "Player")
         {
-            health = 0;
+            Destroy();
         }
     }
 
@@ -86,6 +79,10 @@ public class Seeker : MonoBehaviour, IEnemy, IDamageable
         Debug.Log("Seeker took damage: " + damage);
         animator.Play("seeker-take-damage");
         health -= damage;
+        if (health <= 0)
+        {
+            Destroy();
+        }
     }
     public void Movement(Vector2 playerPosition)
     {
@@ -97,7 +94,6 @@ public class Seeker : MonoBehaviour, IEnemy, IDamageable
     }
     public void OnDestruction()
     {
-        isDestroying = false;
         ExperienceBlobPool.SharedInstance.SpawnObject(transform, 1f);
     }
 
@@ -114,7 +110,6 @@ public class Seeker : MonoBehaviour, IEnemy, IDamageable
     {
         if (!isTakingDamage)
         {
-            animator.SetBool("isTakingDamage", true);
             StartCoroutine(TakeDotDamageCoroutine(damage, time));
         }
     }
@@ -125,8 +120,6 @@ public class Seeker : MonoBehaviour, IEnemy, IDamageable
         fireRate = _enemyData.fireRate;
         movementSpeed = _enemyData.movementSpeed;
         player = _enemyData.spawnPoint;
-        animator.SetBool("isDestroyed", false);
-        animator.SetBool("isTakingDamage", false);
         isTakingDamage = false;
     }
 }
