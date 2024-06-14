@@ -20,6 +20,7 @@ public class Seeker : MonoBehaviour, IEnemy, IDamageable
     private float movementSpeed;
     public Animator animator;
     public bool isTakingDamage = false;
+    private bool isDestroying = false;
     public void Awake()
     {
 
@@ -46,25 +47,24 @@ public class Seeker : MonoBehaviour, IEnemy, IDamageable
     public bool PlayDestroyAnimation()
     {
 
-        animator.SetBool("isDestroyed", true);
+        animator.Play("seeker-destruction-animation");
         return true;
     }
     public IEnumerator DestoryCoroutine()
     {
-
-        if (health <= 0)
-        {
-
-            PlayDestroyAnimation();
-            yield return new WaitForSeconds(0.4f);
-            // Destroy(gameObject);
-            WaveControllerTime.instance.DestoryEnemy(gameObject);
-            OnDestruction();
-        }
+        isDestroying = true;
+        PlayDestroyAnimation();
+        yield return new WaitForSeconds(0.1f);
+        // Destroy(gameObject);
+        WaveControllerTime.instance.DestoryEnemy(gameObject);
+        OnDestruction();
     }
     public void Destroy()
     {
-        StartCoroutine(DestoryCoroutine());
+        if (health <= 0 && !isDestroying)
+        {
+            StartCoroutine(DestoryCoroutine());
+        }
     }
     public void OnCollisionEnter2D(Collision2D other)
     {
@@ -84,7 +84,7 @@ public class Seeker : MonoBehaviour, IEnemy, IDamageable
     public void TakeDamage(float damage)
     {
         Debug.Log("Seeker took damage: " + damage);
-        animator.SetBool("isTakingDamage", true);
+        // animator.SetBool("isTakingDamage", true);
         health -= damage;
     }
     public void Movement(Vector2 playerPosition)
@@ -97,6 +97,7 @@ public class Seeker : MonoBehaviour, IEnemy, IDamageable
     }
     public void OnDestruction()
     {
+        isDestroying = false;
         ExperienceBlobPool.SharedInstance.SpawnObject(transform, 1f);
     }
 
