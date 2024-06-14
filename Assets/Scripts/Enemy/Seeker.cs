@@ -84,7 +84,7 @@ public class Seeker : MonoBehaviour, IEnemy, IDamageable
     public void TakeDamage(float damage)
     {
         Debug.Log("Seeker took damage: " + damage);
-        // animator.SetBool("isTakingDamage", true);
+        animator.Play("seeker-take-damage");
         health -= damage;
     }
     public void Movement(Vector2 playerPosition)
