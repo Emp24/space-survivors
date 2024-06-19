@@ -22,6 +22,7 @@ public class PlayerController : MonoBehaviour, IDamageable
     private float fireRate = 0.5f;
     [SerializeField] FireStrategy defaultGun;
     [SerializeField] FireStrategy rocketGun;
+    [SerializeField] FireStrategy gravityBomb;
     public GameObject player;
     public GameObject bullet;
     public Vector2 speed = new(20, 20);
@@ -60,7 +61,7 @@ public class PlayerController : MonoBehaviour, IDamageable
             {
                 playerAnimator.SetTrigger("Fire");
                 defaultGun.FireGun(rightGun, this.gameObject);
-                defaultGun.FireGun(leftGun, this.gameObject);
+                // defaultGun.FireGun(leftGun, this.gameObject);
                 nextFireTime = Time.time + fireRate;
             }
             else
@@ -144,6 +145,7 @@ public class PlayerController : MonoBehaviour, IDamageable
         health -= damage;
         healthBar.value = health / 100;
         onPlayerDataUpdated?.Invoke();
+        // Destroy();
     }
     public void Destroy()
     {

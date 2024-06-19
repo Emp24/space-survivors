@@ -3,22 +3,20 @@ using System.Collections;
 using UnityEngine;
 
 [CreateAssetMenu]
-public class DefaultGunStrategy : FireStrategy
+public class GravityBombStrategy : FireStrategy
 {
+    public GameObject prefab;
     public override void FireGun(Transform gunPos, GameObject source)
     {
-        // GameObject newBullet = Instantiate(bullet, new Vector3(gunPos.position.x, gunPos.position.y, 0), Quaternion.identity);
-        GameObject newBullet = BulletProjectilePool.SharedInstance.GetPooledObject();
+        GameObject newBullet = Instantiate(prefab, new Vector3(gunPos.position.x, gunPos.position.y, 0), Quaternion.identity);
+        // GameObject newBullet = BulletProjectilePool.SharedInstance.GetPooledObject();
         if (newBullet != null)
         {
-            Projectile projectile = newBullet.GetComponent<Projectile>();
+            // Projectile projectile = newBullet.GetComponent<Projectile>();
             //details can be injected from source
-            projectile.damage = source.GetComponent<IDamageable>().damage;
-            projectile.gameObject.layer = LayerMask.NameToLayer(source.GetComponent<IDamageable>().layer);
-            projectile.source = source;
-            newBullet.transform.position = gunPos.position;
-            newBullet.transform.rotation = gunPos.rotation;
-            newBullet.SetActive(true);
+            // newBullet.transform.position = gunPos.position;
+            // newBullet.transform.rotation = gunPos.rotation;
+            // newBullet.SetActive(true);
         }
         double sourceRotationAngleRad = source.transform.rotation.z * Math.PI / 180;
 
@@ -26,16 +24,22 @@ public class DefaultGunStrategy : FireStrategy
         bulletDirection.y = bulletDirection.y * (float)Math.Cos(sourceRotationAngleRad);
         newBullet.GetComponent<MonoBehaviour>().StartCoroutine(MoveBullet(newBullet, bulletDirection));
     }
+
     IEnumerator MoveBullet(GameObject bullet, Vector3 direction)
     {
         float startTime = Time.time;
         float duration = 2f;
         while (Time.time - startTime < duration) // Adjust the duration as needed.
         {
-            bullet.transform.position += direction * 10f * Time.deltaTime;
+            if (bullet.GetComponent<GravityBomb>() != null && !bullet.GetComponent<GravityBomb>().isExpanded)
+            {
+                bullet.transform.position += direction * 10f * Time.deltaTime;
+            }
             yield return null;
         }
+        yield return new WaitForSeconds(5f);
         bullet.SetActive(false);
-        BulletProjectilePool.SharedInstance.ReturnToPool(bullet);
+        // BulletProjectilePool.SharedInstance.ReturnToPool(bullet);
     }
 }
+

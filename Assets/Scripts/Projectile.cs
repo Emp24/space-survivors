@@ -6,7 +6,7 @@ public class Projectile : MonoBehaviour
 
     public GameObject source;
 
-    public void OnCollisionEnter2D(Collision2D other)
+    public virtual void OnCollisionEnter2D(Collision2D other)
     {
         if (other.gameObject.tag == "Enemy" && source.tag == "Player")
         {

@@ -20,7 +20,6 @@ public class Seeker : MonoBehaviour, IEnemy, IDamageable
     private float movementSpeed;
     public Animator animator;
     public bool isTakingDamage = false;
-    private bool isDestroying = false;
     public void Awake()
     {
 

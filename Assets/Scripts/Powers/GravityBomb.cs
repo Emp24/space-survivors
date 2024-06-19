@@ -1,15 +1,35 @@
+using System.Collections;
 using UnityEngine;
 
-public class GravityBomb : MonoBehaviour
+public class GravityBomb : Projectile
 {
-    private float damageRate = 0.5f;
-
-    private float nextDamageTime = 0;
+    private float radius = 3f;
+    private new float damage = 5f;
+    //Damage every damageInterval 
+    private float damageInterval = 0.5f;
+    public bool isExpanded = false;
     void Update()
     {
-        ScanSurrounding();
+        if (isExpanded)
+        {
+
+            ScanSurrounding();
+        }
     }
 
+    public override void OnCollisionEnter2D(Collision2D other)
+    {
+        if (other.gameObject.tag == "Enemy")
+        {
+
+            //Change sprite from projectile to gravity bomb 
+            //Scan surrounding (begin the suck) 
+            StartCoroutine(Expand());
+            isExpanded = true;
+            gameObject.layer = LayerMask.NameToLayer("Enemy");
+        }
+
+    }
     public void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
@@ -23,7 +43,7 @@ public class GravityBomb : MonoBehaviour
     }
     public void ScanSurrounding()
     {
-        Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, 3f, LayerMask.GetMask("Enemy"));
+        Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, radius, LayerMask.GetMask("Enemy"));
         foreach (Collider2D collider in colliders)
         {
             if (collider.gameObject != gameObject)
@@ -42,6 +62,15 @@ public class GravityBomb : MonoBehaviour
 
     public void Damage(GameObject enemy)
     {
-        enemy.GetComponent<IDamageable>().TakeDotDamage(5f, 0.5f);
+        enemy.GetComponent<IDamageable>().TakeDotDamage(damage, damageInterval);
+    }
+
+    public IEnumerator Expand()
+    {
+
+        gameObject.GetComponent<Animator>().Play("gravity-bomb-expansion");
+        yield return new WaitForSeconds(1f);
+        Debug.Log("change scale: " + gameObject.transform.localScale);
+        gameObject.GetComponent<Animator>().Play("gravity-bomb-expanded");
     }
 }
