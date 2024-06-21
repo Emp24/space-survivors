@@ -26,7 +26,7 @@ public class GravityBomb : Projectile
             //Scan surrounding (begin the suck) 
             StartCoroutine(Expand());
             isExpanded = true;
-            gameObject.layer = LayerMask.NameToLayer("Enemy");
+            gameObject.layer = LayerMask.NameToLayer("GravityBomb");
         }
 
     }
@@ -70,7 +70,7 @@ public class GravityBomb : Projectile
 
         gameObject.GetComponent<Animator>().Play("gravity-bomb-expansion");
         yield return new WaitForSeconds(1f);
-        Debug.Log("change scale: " + gameObject.transform.localScale);
         gameObject.GetComponent<Animator>().Play("gravity-bomb-expanded");
+
     }
 }
