@@ -1,6 +1,8 @@
 using System.Collections;
 using UnityEngine;
 
+// TODO: Add seperate DOT damage and projectile damage variables
+
 public class GravityBomb : Projectile
 {
     private float radius = 3f;

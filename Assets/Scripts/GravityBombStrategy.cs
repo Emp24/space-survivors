@@ -9,6 +9,7 @@ public class GravityBombStrategy : FireStrategy
     public override void FireGun(Transform gunPos, GameObject source)
     {
         GameObject newBullet = Instantiate(prefab, new Vector3(gunPos.position.x, gunPos.position.y, 0), Quaternion.identity);
+        newBullet.GetComponent<GravityBomb>().source = source;
         // GameObject newBullet = BulletProjectilePool.SharedInstance.GetPooledObject();
         if (newBullet != null)
         {
