@@ -1,53 +1,63 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// Bullets can be deactivated by a collision at any time (which also kills their movement coroutine),
+// so instead of trusting every bullet to be handed back, the pool scans for any inactive instance
+// and grows when the whole pool is in flight.
 public class BulletProjectilePool : MonoBehaviour, IObjectPool
 {
     public static IObjectPool SharedInstance;
-    public Queue<GameObject> pooledObjects;
     public GameObject objectToPool;
     public int amountToPool;
+
+    private readonly List<GameObject> pooledObjects = new List<GameObject>();
+    private int searchStart;
 
     void Awake()
     {
         SharedInstance = this;
-    }
-    void Start()
-    {
         InitializePool();
     }
 
-    // Initializes the object pooling system by instantiating a specified number of GameObjects and adding them to a queue for future use.
     public void InitializePool()
     {
-        pooledObjects = new Queue<GameObject>();
-        GameObject tmp;
+        pooledObjects.Clear();
         for (int i = 0; i < amountToPool; i++)
         {
-            tmp = Instantiate(objectToPool);
-            tmp.SetActive(false);
-            pooledObjects.Enqueue(tmp);
+            pooledObjects.Add(CreateInstance());
         }
     }
 
-    // Retrieves an inactive GameObject from the object pool.
-    //
-    // Returns:
-    //     The inactive GameObject retrieved from the object pool, or null if none are available.
+    // Returns an inactive bullet, growing the pool if every bullet is currently in use.
     public GameObject GetPooledObject()
     {
-        if (!pooledObjects.Peek().activeInHierarchy)
+        int count = pooledObjects.Count;
+        // Start where the last search ended: the next slot is very likely free, so this is O(1) in practice.
+        for (int i = 0; i < count; i++)
         {
-            return pooledObjects.Dequeue();
+            int index = (searchStart + i) % count;
+            GameObject candidate = pooledObjects[index];
+            if (candidate != null && !candidate.activeInHierarchy)
+            {
+                searchStart = (index + 1) % count;
+                return candidate;
+            }
         }
-        return null;
+
+        GameObject extra = CreateInstance();
+        pooledObjects.Add(extra);
+        return extra;
     }
 
-    // Returns the specified GameObject into the pooledObjects queue.
     public void ReturnToPool(GameObject gameObject)
     {
-        pooledObjects.Enqueue(gameObject);
+        gameObject.SetActive(false);
     }
 
+    private GameObject CreateInstance()
+    {
+        GameObject tmp = Instantiate(objectToPool);
+        tmp.SetActive(false);
+        return tmp;
+    }
 }

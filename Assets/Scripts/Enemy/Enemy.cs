@@ -78,6 +78,7 @@ public class Enemy : MonoBehaviour, IDamageable, IEnemy
     public void TakeDamage(float damage)
     {
         health -= damage;
+        GameEvents.EnemyDamaged(transform.position, damage);
     }
 
     public void Movement(Vector2 playerPosition)
@@ -109,6 +110,11 @@ public class Enemy : MonoBehaviour, IDamageable, IEnemy
         damage = _enemyData.damage;
         fireRate = _enemyData.fireRate;
         player = _enemyData.spawnPoint;
+    }
+    public void PrepareForSpawn(float healthMultiplier, bool isElite)
+    {
+        ResetData();
+        health *= healthMultiplier;
     }
     public void TakeDotDamage(float damage, float time)
     {

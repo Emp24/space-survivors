@@ -1,12 +1,11 @@
 using System.Collections;
 using UnityEngine;
 
-// TODO: Add seperate DOT damage and projectile damage variables
-
+// Impact and pull damage both use Projectile.damage, which GravityBombStrategy injects from the shooter,
+// so damage upgrades scale the bomb too.
 public class GravityBomb : Projectile
 {
     private float radius = 3f;
-    private new float damage = 5f;
     //Damage every damageInterval 
     private float damageInterval = 0.5f;
     public bool isExpanded = false;

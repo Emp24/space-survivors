@@ -12,7 +12,7 @@ A top-down, bullet-hell **survivor-like** built in **Unity (C#)**. You pilot a l
 2. Download and extract the zip.
 3. Run `bullet-hell-test.exe`.
 
-**Controls:** `WASD` to move · mouse to aim · left-click to fire · `Esc` to pause.
+**Controls:** `WASD` to move · mouse to aim · left-click to fire · `Space` to dash · `Esc` to pause · `R` to retry after death.
 
 To open the source: clone the repo and open it in **Unity 2021.3.26f1** (LTS).
 
@@ -22,9 +22,13 @@ To open the source: clone the repo and open it in **Unity 2021.3.26f1** (LTS).
 
 | System | What it does |
 |---|---|
-| **Endless waves** | Enemies spawn continuously from off-screen on all sides, capped at a live concurrency limit so the action stays intense without melting the frame rate. |
+| **Endless waves** | Enemies spawn continuously from off-screen on all sides. Difficulty ramps over time: more enemies alive at once, faster spawns, and tougher health. |
+| **Elites** | Every ~35s an oversized, tinted **elite Seeker** appears with 8× health. Instead of kamikaze-ing it bounces off you and charges again, and drops a big XP payout. |
 | **XP & leveling** | Destroyed enemies drop XP blobs that are magnetically vacuumed toward the player within a pickup radius. Enough XP → level up. |
-| **Power draft** | Each level-up pauses the game and opens a power-pick menu (more damage / more speed / more health), à la *Vampire Survivors*. |
+| **Upgrade draft** | Each level-up pauses the game and drafts 3 random upgrades from a pool of 9 (damage, fire rate, split shot, thrusters, hull plating, regen, tractor beam, afterburner, emergency repair), with stack limits and conditional offers. |
+| **Dash** | `Space` bursts you in your steering direction (or aim direction if standing still) with brief invulnerability, on a cooldown shown on the HUD. |
+| **Run stats & game over** | A live survival timer and kill counter. Dying ends the run with a summary screen, persistent best time and kills, and instant retry. |
+| **Juice** | Floating damage numbers, trauma-based screen shake when hit, and i-frame flashing. |
 | **Weapons** | Default rapid-fire gun, a rocket, and a **Gravity Bomb** that detonates into a black-hole field — sucking in nearby enemies and applying damage-over-time. |
 | **Enemy variety** | Standard shooters that track and fire at the player, plus fast melee **Seekers** that charge straight in. |
 
@@ -103,7 +107,11 @@ Combat is built on small, focused interfaces so unrelated systems can interact w
 - **`IEnemy`** — a common contract (`Movement`, `Rotation`, `ResetData`) that lets the wave controller manage `Enemy` and `Seeker` interchangeably.
 - **`EnemyData` (ScriptableObject)** — health, damage, fire rate, movement speed, and rotation strategy all live as **editable data assets**. New enemy archetypes can be tuned or created entirely in the editor.
 
-### 5. The Gravity Bomb — composition in action
+### 5. Zero-wiring run systems
+
+Run-level systems (stats, run HUD, game over screen, damage numbers, camera shake) are spawned by `RunBootstrap` via `[RuntimeInitializeOnLoadMethod]` into any scene containing a player, and their UI is built in code (`RuntimeUI`). They communicate only through a static `GameEvents` bus (`OnEnemyKilled`, `OnEnemyDamaged`, `OnPlayerDamaged`, `OnPlayerDied`), so adding a new listener such as achievements or audio never touches the publishers. Upgrades are plain data entries in `UpgradeLibrary`, each with an `Apply` callback, a stack limit, and an optional availability predicate.
+
+### 6. The Gravity Bomb — composition in action
 
 The `GravityBomb` extends the base `Projectile`, then layers on its own behavior: on impact it switches collision layers, plays an expansion animation, and begins an `OverlapCircle` scan each frame that pulls in nearby enemies and applies interval-based DOT through the shared `IDamageable.TakeDotDamage()` contract. It's a tidy example of reusing the projectile/collision foundation while adding genuinely new mechanics on top.
 
@@ -114,6 +122,7 @@ The `GravityBomb` extends the base `Projectile`, then layers on its own behavior
 ```
 Assets/Scripts/
 ├── GameManager.cs              # Singleton state machine + event bus
+├── Core/                       # GameEvents bus, RunStats, RunBootstrap, CameraShake, DamageNumbers
 ├── PlayerController.cs         # Movement, aiming, firing, leveling, XP magnet
 ├── Projectile.cs               # Base projectile + collision handling
 ├── FireStrategy.cs             # Abstract weapon strategy (ScriptableObject)
@@ -124,10 +133,10 @@ Assets/Scripts/
 ├── Enemy/                      # Enemy.cs, Seeker.cs, EnemyData, IEnemy, spawner
 ├── EnemyWaves/                 # WaveControllerTime — endless pooled spawning
 ├── ObjectPools/                # IObjectPool + bullet/projectile/XP pools
-├── Powers/                     # GravityBomb field mechanic
+├── Powers/                     # GravityBomb field mechanic + Upgrades/ (data-driven upgrade library)
 ├── Rotation/                   # RotationStrategy abstraction + FacePlayerRotation
 ├── Managers/                   # InputManager
-└── UserInterface/              # HUD, MainMenu, PauseMenu, PickPowerMenu (event-driven views)
+└── UserInterface/              # HUD, MainMenu, PauseMenu, PickPowerMenu, RunUI (code-built run HUD + game over)
 ```
 
 **Tech:** Unity 2021.3.26f1 (LTS) · C# · Unity 2D · TextMesh Pro · DOTween · Aseprite import pipeline.

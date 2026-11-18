@@ -12,6 +12,10 @@ public class HUDView : MonoBehaviour
     {
         playerController.onPlayerDataUpdated += UpdateHUD;
     }
+    public void OnDestroy()
+    {
+        playerController.onPlayerDataUpdated -= UpdateHUD;
+    }
     public void UpdateHUD()
     {
         UpdateExperience();
@@ -21,7 +25,7 @@ public class HUDView : MonoBehaviour
 
     public void UpdateExperience()
     {
-        experience.text = "Experience: " + playerController.xp.ToString() + "/" + playerController.nextLevelXp.ToString();
+        experience.text = "Experience: " + playerController.xp.ToString("0") + "/" + playerController.nextLevelXp.ToString("0");
     }
 
     public void UpdateLevel()
@@ -30,6 +34,6 @@ public class HUDView : MonoBehaviour
     }
     public void UpdateHealth()
     {
-        healthBar.fillAmount = playerController.health / 100f;
+        healthBar.fillAmount = playerController.health / playerController.MaxHealth;
     }
 }

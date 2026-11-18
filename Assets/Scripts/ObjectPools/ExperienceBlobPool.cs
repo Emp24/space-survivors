@@ -12,9 +12,6 @@ public class ExperienceBlobPool : MonoBehaviour
     void Awake()
     {
         SharedInstance = this;
-    }
-    void Start()
-    {
         InitializePool();
     }
 
@@ -34,14 +31,17 @@ public class ExperienceBlobPool : MonoBehaviour
     // Retrieves an inactive GameObject from the object pool.
     //
     // Returns:
-    //     The inactive GameObject retrieved from the object pool, or null if none are available.
+    //     An inactive GameObject from the pool, or a newly created one if the pool is exhausted.
     public GameObject GetPooledObject()
     {
-        if (!pooledObjects.Peek().activeInHierarchy)
+        // Blobs left uncollected stay out of the pool, so grow it instead of failing when it runs dry.
+        if (pooledObjects.Count == 0 || pooledObjects.Peek().activeInHierarchy)
         {
-            return pooledObjects.Dequeue();
+            GameObject extra = Instantiate(objectToPool);
+            extra.SetActive(false);
+            return extra;
         }
-        return null;
+        return pooledObjects.Dequeue();
     }
 
     // Returns the specified GameObject into the pooledObjects queue.

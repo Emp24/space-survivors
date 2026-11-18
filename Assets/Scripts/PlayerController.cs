@@ -1,12 +1,12 @@
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-
-
 public class PlayerController : MonoBehaviour, IDamageable
 {
+    public const float MinFireInterval = 0.1f;
+
     [SerializeField]
     Rigidbody2D rb;
     [SerializeField]
@@ -17,9 +17,6 @@ public class PlayerController : MonoBehaviour, IDamageable
     public float damage { get => _damage; set => _damage = value; }
     public string _layer = "PlayerProjectile";
     public string layer { get => _layer; set => _layer = value; }
-    private float nextFireTime = 0.0f;
-    // Default firerate is 0.5f (attack each half a secod) maximum fireRate will be 0.1f
-    private float fireRate = 0.5f;
     [SerializeField] FireStrategy defaultGun;
     [SerializeField] FireStrategy rocketGun;
     [SerializeField] FireStrategy gravityBomb;
@@ -34,73 +31,153 @@ public class PlayerController : MonoBehaviour, IDamageable
     public int playerLevel = 1;
     public float xp = 0;
     public float nextLevelXp = 10;
-    private float startTime;
-    private float journeyLength;
     public Action onPlayerDataUpdated;
+
+    [Header("Combat")]
+    [Tooltip("Seconds between volleys. Default 0.5, floored at MinFireInterval.")]
+    [SerializeField] private float fireInterval = 0.5f;
+    [SerializeField] private int projectileCount = 1;
+    [SerializeField] private float spreadAngle = 12f;
+    [Tooltip("Brief invulnerability after taking a hit, so a swarm can't delete you in one frame.")]
+    [SerializeField] private float hitInvulnerability = 0.3f;
+
+    [Header("Dash")]
+    [SerializeField] private float dashSpeed = 55f;
+    [SerializeField] private float dashDuration = 0.15f;
+    [SerializeField] private float dashCooldown = 1.5f;
+    [SerializeField] private float dashInvulnerabilityGrace = 0.1f;
+
+    [Header("Pickup & sustain")]
+    [SerializeField] private float magnetRadius = 5f;
+    [SerializeField] private float magnetPullSpeed = 10f;
+    [SerializeField] private float healthRegen = 0f;
+
+    private float nextFireTime;
+    private float maxHealth;
+    private float invulnerableUntil;
+    private float dashEndTime;
+    private float nextDashTime;
+    private Vector2 dashDirection;
+    private float regenBuffer;
+    private bool isDead;
+    private SpriteRenderer[] spriteRenderers;
+    private readonly List<Collider2D> magnetHits = new List<Collider2D>(64);
+    private ContactFilter2D consumablesFilter;
+    private readonly Dictionary<string, int> upgradeStacks = new Dictionary<string, int>();
+
+    public float MaxHealth { get => maxHealth; set { maxHealth = Mathf.Max(1f, value); RefreshHealth(); } }
+    public float FireInterval { get => fireInterval; set => fireInterval = Mathf.Max(MinFireInterval, value); }
+    public int ProjectileCount { get => projectileCount; set => projectileCount = Mathf.Max(1, value); }
+    public float DashCooldown { get => dashCooldown; set => dashCooldown = Mathf.Max(0.3f, value); }
+    public float MagnetRadius { get => magnetRadius; set { magnetRadius = value; magnetPullSpeed = 10f * value / 5f; } }
+    public float HealthRegen { get => healthRegen; set => healthRegen = value; }
+    public bool IsDashing => Time.time < dashEndTime;
+    public bool IsDead => isDead;
+    // 0..1 recharge progress, for the HUD.
+    public float DashCharge => dashCooldown <= 0f ? 1f : Mathf.Clamp01(1f - (nextDashTime - Time.time) / dashCooldown);
+
+    void Awake()
+    {
+        maxHealth = health;
+        spriteRenderers = GetComponentsInChildren<SpriteRenderer>();
+        consumablesFilter = new ContactFilter2D();
+        consumablesFilter.SetLayerMask(LayerMask.GetMask("Consumables"));
+        consumablesFilter.useTriggers = true;
+    }
 
     void Start()
     {
-        healthBar.value = health / 100;
-        // Keep a note of the time the movement started.
-        startTime = Time.time;
-
-        // Calculate the journey length.
-        journeyLength = Vector3.Distance(new Vector3(-0.01f, -0.68f, 0), new Vector3(50, 50, 0));
+        RefreshHealth();
     }
 
     void Update()
     {
-        Debug.DrawLine(new Vector3(0, 0, 0), new Vector3(5, 5, 0), Color.green);
-        PlayerMovement();
+        bool inPlay = GameManager.instance.gameState == GameState.Playing || GameManager.instance.gameState == GameState.StartGame;
 
-        if (GameManager.instance.gameState == GameState.Playing || GameManager.instance.gameState == GameState.StartGame)
+        if (inPlay && !isDead)
         {
+            HandleDash();
             PlayerRotation();
-
-            if (Input.GetKey(KeyCode.Mouse0) && Time.time >= nextFireTime)
-            {
-                playerAnimator.SetTrigger("Fire");
-                defaultGun.FireGun(rightGun, this.gameObject);
-                // defaultGun.FireGun(leftGun, this.gameObject);
-                nextFireTime = Time.time + fireRate;
-            }
-            else
-            {
-                playerAnimator.SetTrigger("StopFire");
-            }
+            HandleFiring();
+            Regenerate();
+            LevelUp();
         }
 
-        LevelUp();
+        PlayerMovement();
         ScanSurrounding();
+        UpdateInvulnerabilityFlash();
     }
+
+    private void HandleFiring()
+    {
+        if (Input.GetKey(KeyCode.Mouse0) && Time.time >= nextFireTime)
+        {
+            playerAnimator.SetTrigger("Fire");
+            // Fan the volley out symmetrically around the aim direction.
+            for (int i = 0; i < projectileCount; i++)
+            {
+                float offset = (i - (projectileCount - 1) * 0.5f) * spreadAngle;
+                defaultGun.FireGun(rightGun, gameObject, offset);
+            }
+            nextFireTime = Time.time + fireInterval;
+        }
+        else
+        {
+            playerAnimator.SetTrigger("StopFire");
+        }
+    }
+
+    private void HandleDash()
+    {
+        if (!Input.GetKeyDown(KeyCode.Space) || Time.time < nextDashTime) return;
+
+        Vector2 input = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
+        // Dash where you're steering; if standing still, dash where you're aiming.
+        dashDirection = input.sqrMagnitude > 0.01f ? input.normalized : (Vector2)transform.up;
+        dashEndTime = Time.time + dashDuration;
+        nextDashTime = Time.time + dashCooldown;
+        invulnerableUntil = Mathf.Max(invulnerableUntil, dashEndTime + dashInvulnerabilityGrace);
+    }
+
+    private void Regenerate()
+    {
+        if (healthRegen <= 0f || health >= maxHealth) return;
+        // Apply in chunks so the HUD isn't rebuilt every frame.
+        regenBuffer += healthRegen * Time.deltaTime;
+        if (regenBuffer >= 1f)
+        {
+            Heal(regenBuffer);
+            regenBuffer = 0f;
+        }
+    }
+
     public void LevelUp()
     {
-        if (xp >= nextLevelXp)
-        {
-            playerLevel++;
-            nextLevelXp += nextLevelXp * 0.2f;
-            xp = 0;
-            Debug.Log("current player level:" + playerLevel);
-            GameManager.instance.ChangeGameState(GameState.PowerMenu);
-        }
-        onPlayerDataUpdated?.Invoke();
+        if (xp < nextLevelXp) return;
 
+        // Carry overflow XP into the next level instead of discarding it.
+        xp -= nextLevelXp;
+        nextLevelXp *= 1.2f;
+        playerLevel++;
+        onPlayerDataUpdated?.Invoke();
+        GameManager.instance.ChangeGameState(GameState.PowerMenu);
     }
 
     public void GainXP(float amount)
     {
         xp += amount;
-        Debug.Log("xp gained:" + xp);
         onPlayerDataUpdated?.Invoke();
     }
+
     public void OnCollisionEnter2D(Collision2D other)
     {
         string collidingObjectTag = other.gameObject.tag;
-        string sourceTag = other.gameObject.GetComponent<Projectile>()?.source?.tag;
+        Projectile projectile = other.gameObject.GetComponent<Projectile>();
+        string sourceTag = projectile != null && projectile.source != null ? projectile.source.tag : null;
 
         if (collidingObjectTag == "Projectile" && sourceTag == "Enemy")
         {
-            TakeDamage(other.gameObject.GetComponent<Projectile>().damage);
+            TakeDamage(projectile.damage);
         }
         if (collidingObjectTag == "Enemy")
         {
@@ -108,93 +185,114 @@ public class PlayerController : MonoBehaviour, IDamageable
         }
         if (collidingObjectTag == "ExperienceBlob")
         {
-            float xpGained = other.gameObject.GetComponent<ExperienceBlob>().experience;
-            GainXP(xpGained);
+            GainXP(other.gameObject.GetComponent<ExperienceBlob>().experience);
         }
     }
 
     public void PlayerMovement()
     {
-        float inputX = Input.GetAxis("Horizontal");
-        float inputY = Input.GetAxis("Vertical");
+        if (IsDashing)
+        {
+            rb.linearVelocity = dashDirection * dashSpeed;
+        }
+        else if (isDead)
+        {
+            rb.linearVelocity = Vector2.zero;
+        }
+        else
+        {
+            float inputX = Input.GetAxis("Horizontal");
+            float inputY = Input.GetAxis("Vertical");
+            rb.linearVelocity = new Vector2(speed.x * inputX, speed.y * inputY);
+        }
 
-        Vector2 movement = new Vector2(speed.x * inputX, speed.y * inputY);
-
-        // movement *= Time.deltaTime;
-        rb.velocity = movement;
         //moving the camera with the player (keeping the camera on the player)
         cam.transform.position = new Vector3(transform.position.x, transform.position.y, cam.transform.position.z);
-
-        // transform.Translate(movement);
     }
 
     public void PlayerRotation()
     {
         Vector3 mousePos = Input.mousePosition;
-        mousePos.z = 5.23f;
-
-        Vector3 objectPos = Camera.main.WorldToScreenPoint(transform.position);
-        mousePos.x = mousePos.x - objectPos.x;
-        mousePos.y = mousePos.y - objectPos.y;
-
-        float angle = Mathf.Atan2(mousePos.y, mousePos.x) * Mathf.Rad2Deg;
-        transform.rotation = Quaternion.Euler(new Vector3(0, 0, angle - 90f));
+        Vector3 objectPos = cam.WorldToScreenPoint(transform.position);
+        float angle = Mathf.Atan2(mousePos.y - objectPos.y, mousePos.x - objectPos.x) * Mathf.Rad2Deg;
+        transform.rotation = Quaternion.Euler(0, 0, angle - 90f);
     }
+
     public void TakeDamage(float damage)
     {
+        if (isDead || Time.time < invulnerableUntil) return;
+
         health -= damage;
-        healthBar.value = health / 100;
-        onPlayerDataUpdated?.Invoke();
-        // Destroy();
+        invulnerableUntil = Time.time + hitInvulnerability;
+        RefreshHealth();
+        GameEvents.PlayerDamaged(damage);
+        Destroy();
     }
+
+    public void Heal(float amount)
+    {
+        if (isDead) return;
+        health = Mathf.Min(maxHealth, health + amount);
+        RefreshHealth();
+    }
+
+    private void RefreshHealth()
+    {
+        if (healthBar != null) healthBar.value = health / maxHealth;
+        onPlayerDataUpdated?.Invoke();
+    }
+
+    // Part of IDamageable: handles death. The ship stays in the scene so the camera keeps its framing.
     public void Destroy()
     {
-        if (health <= 0)
-        {
-            Destroy(gameObject);
-        }
+        if (isDead || health > 0) return;
 
+        health = 0;
+        isDead = true;
+        rb.linearVelocity = Vector2.zero;
+        GameEvents.PlayerDied();
+        GameManager.instance.ChangeGameState(GameState.GameOver);
     }
-    public void ScanSurrounding()
+
+    private void UpdateInvulnerabilityFlash()
     {
-        Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, 5f, LayerMask.GetMask("Consumables"));
-        foreach (Collider2D collider in colliders)
+        bool flashing = !isDead && Time.time < invulnerableUntil;
+        float alpha = flashing ? (Mathf.Repeat(Time.time * 20f, 1f) < 0.5f ? 0.35f : 1f) : 1f;
+        foreach (SpriteRenderer sr in spriteRenderers)
         {
-            if (collider.gameObject != gameObject)
+            Color c = sr.color;
+            if (!Mathf.Approximately(c.a, alpha))
             {
-                Debug.Log(collider.gameObject.name + " in range");
-                SuckExpBlobs(collider.gameObject);
+                c.a = alpha;
+                sr.color = c;
             }
         }
+    }
 
+    public void ScanSurrounding()
+    {
+        int count = Physics2D.OverlapCircle(transform.position, magnetRadius, consumablesFilter, magnetHits);
+        for (int i = 0; i < count; i++)
+        {
+            SuckExpBlobs(magnetHits[i].gameObject);
+        }
     }
 
     public void SuckExpBlobs(GameObject blob)
     {
-
-        blob.transform.position = Vector2.MoveTowards(blob.transform.position, transform.position, 10 * Time.deltaTime);
+        blob.transform.position = Vector2.MoveTowards(blob.transform.position, transform.position, magnetPullSpeed * Time.deltaTime);
     }
+
     public void TakeDotDamage(float damage, float time)
     {
     }
-    public void ApplyPower(int powerId)
-    {
-        Debug.Log("Apply Power: " + powerId);
-        switch (powerId)
-        {
-            case 0:
-                damage *= 2;
-                Debug.Log("player damage:" + damage);
-                break;
-            case 1:
-                speed = new Vector2(speed.x + 0.2f, speed.y + 0.2f);
-                Debug.Log("player speed:" + speed);
-                break;
-            case 2:
-                health += 10;
-                Debug.Log("player health:" + health);
-                break;
-        }
-    }
 
+    public int GetUpgradeStacks(string upgradeId) => upgradeStacks.TryGetValue(upgradeId, out int stacks) ? stacks : 0;
+
+    public void ApplyUpgrade(Upgrade upgrade)
+    {
+        upgrade.Apply(this);
+        upgradeStacks[upgrade.Id] = GetUpgradeStacks(upgrade.Id) + 1;
+        onPlayerDataUpdated?.Invoke();
+    }
 }
